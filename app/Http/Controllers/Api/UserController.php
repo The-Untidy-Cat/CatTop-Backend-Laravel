@@ -13,24 +13,33 @@ class UserController extends Controller
 
         $customer = $request->user()->customer()->first();
         $employee = $request->user()->employee()->first();
-        return response()->json([
-            'status' => 200,
-            'message' => 'Get profile success',
-            'data' => $customer->only([
-                "first_name",
-                "last_name",
-                "email",
-                "phone_number",
-                "date_of_birth",
-                "gender"
-            ]) ?? $employee->only([
-                            "first_name",
-                            "last_name",
-                            "email",
-                            "phone_number",
-                            "date_of_birth",
-                            "gender"
-                        ]),
-        ], 200);
+        try {
+            return response()->json([
+                'status' => 200,
+                'message' => 'Get profile success',
+                'data' => $customer->only([
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone_number",
+                    "date_of_birth",
+                    "gender"
+                ]) ?? $employee->only([
+                                "first_name",
+                                "last_name",
+                                "email",
+                                "phone_number",
+                                "date_of_birth",
+                                "gender"
+                            ]),
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Get profile failed',
+                'data' => null,
+            ], 500);
+        }
+
     }
 }

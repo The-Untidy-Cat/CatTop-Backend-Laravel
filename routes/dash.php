@@ -15,8 +15,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth:sanctum', DashPermission::class])->group(
+Route::middleware(['auth:sanctum', 'auth.dash'])->group(
     function () {
         Route::get('/user', [UserController::class, 'getProfile']);
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::group(['prefix' => '/brands'], function () {
+            Route::get('/', [BrandController::class, 'index']);
+            Route::post('/', [BrandController::class, 'store']);
+            Route::get('/{brand}', [BrandController::class, 'show']);
+            Route::put('/{brand}', [BrandController::class, 'update']);
+            Route::delete('/{brand}', [BrandController::class, 'destroy']);
+        });
     }
 );

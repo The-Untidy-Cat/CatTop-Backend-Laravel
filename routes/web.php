@@ -15,15 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return ['Laravel' => app()->version()];
+    return ['message' => "Server is running"];
 });
+Route::post("/customer", [AuthController::class, "customerBasicLogin"]);
+Route::post("/dash", [AuthController::class, "employeesBasicLogin"]);
 
-
-// middleware(VerifyCsrfToken::class)->
-
-// Route::post("/login", "App\Http\Controllers\Api\AuthController@customerLogin");
-// Route::middleware(['auth:sanctum'])->group(function () {
-//     Route::get("/profile", "App\Http\Controllers\Api\CustomerController@profile");
-//     Route::post("/logout", "App\Http\Controllers\Api\AuthController@customerLogout");
-
-// require __DIR__.'/api.php';
