@@ -17,21 +17,28 @@ class UserController extends Controller
             return response()->json([
                 'status' => 200,
                 'message' => 'Get profile success',
-                'data' => $customer->only([
+                'data' => $customer ? ($customer->only([
                     "first_name",
                     "last_name",
                     "email",
                     "phone_number",
                     "date_of_birth",
                     "gender"
-                ]) ?? $employee->only([
-                                "first_name",
-                                "last_name",
-                                "email",
-                                "phone_number",
-                                "date_of_birth",
-                                "gender"
-                            ]),
+                ])) : ($employee ? $employee->only([
+                        "first_name",
+                        "last_name",
+                        "email",
+                        "phone_number",
+                        "date_of_birth",
+                        "gender"
+                    ]) : [
+                        "first_name" => null,
+                        "last_name" => null,
+                        "email" => null,
+                        "phone_number" => null,
+                        "date_of_birth" => null,
+                        "gender" => null
+                    ]),
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

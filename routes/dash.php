@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\UserController;
-use App\Http\Middleware\DashPermission;
+use App\Http\Controllers\BrandController;
 use Illuminate\Support\Facades\Route;
 
 /*

@@ -1,16 +1,15 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
-// Route::middleware(['auth:sanctum'])->group(function () {
-//     Route::post("/register", [AuthController::class, "customerRegister"]);
-//     Route::post("/customer", [AuthController::class, "customerBasicLogin"]);
-//     Route::post("/dash", [AuthController::class, "employeesBasicLogin"]);
-// });
 Route::get('/csrf', [CsrfCookieController::class, 'show'])->name('csrf');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'forgotPassword']);
+Route::post('/verify-otp', [ForgotPasswordController::class, 'verifyPin']);
+Route::post('/reset-password', [ResetPasswordController::class, 'resetPassword']);
 Route::post("/register", [AuthController::class, "customerRegister"]);
 Route::post("/customer", [AuthController::class, "customerBasicLogin"]);
 Route::post("/dash", [AuthController::class, "employeesBasicLogin"]);

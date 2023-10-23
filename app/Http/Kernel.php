@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Controllers\Api\XSRFController;
 use App\Http\Middleware\AuthByCookie;
 use App\Http\Middleware\DashPermission;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -33,6 +34,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+            // 'xsrf.addHeader',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -42,6 +44,7 @@ class Kernel extends HttpKernel
         ],
 
         'auth' => [
+            // 'xsrf.addHeader',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -51,6 +54,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
         'customer' => [
+            // 'xsrf.addHeader',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -61,6 +65,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
         'dash' => [
+            // 'xsrf.addHeader',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -82,6 +87,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewareAliases = [
         'auth' => \App\Http\Middleware\Authenticate::class,
+        'xsrf.addHeader' => XSRFController::class,
         'auth.dash' => DashPermission::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
