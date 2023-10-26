@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\BrandController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return ['message' => "Server is running"];
 });
-Route::post("/customer", [AuthController::class, "customerBasicLogin"]);
-Route::post("/dash", [AuthController::class, "employeesBasicLogin"]);
+Route::prefix('brands')->group(function () {
+    Route::get('/', [BrandController::class, 'index']);
+    Route::get('/{id}', [BrandController::class, 'show']);
+});
+
 

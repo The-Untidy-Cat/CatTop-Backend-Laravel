@@ -73,7 +73,7 @@ class Kernel extends HttpKernel
             AuthByCookie::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-                // \Illuminate\Routing\Middleware\ThrottleRequests::class.':dash',
+            // \Illuminate\Routing\Middleware\ThrottleRequests::class.':dash',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];

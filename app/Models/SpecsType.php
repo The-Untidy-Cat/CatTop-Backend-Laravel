@@ -15,4 +15,8 @@ class SpecsType extends Model
         'slug',
         'description',
     ];
+
+    public function specs(){
+        return $this->hasMany(ProductModelSpecs::class,'specs_type','id');
+    }
 }

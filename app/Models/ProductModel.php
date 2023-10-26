@@ -19,4 +19,10 @@ class ProductModel extends Model
         'discount_percent',
         'price',
     ];
+    public function product(){
+        return $this->belongsTo(Product::class);
+    }
+    public function specs(){
+        return $this->hasMany(ProductModelSpecs::class,'product_model_id','id');
+    }
 }
