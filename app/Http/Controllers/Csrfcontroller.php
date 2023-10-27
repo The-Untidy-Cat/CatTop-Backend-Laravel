@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class Csrfcontroller extends Controller
+class CsrfController extends Controller
 {
     //
     /**
@@ -17,12 +17,14 @@ class Csrfcontroller extends Controller
     {
         if ($request->expectsJson()) {
             return response()->json([
-                "csrf_token" => csrf_token(),
+                "data" => csrf_token(),
+                "code" => 200,
             ], 200);
         }
 
         return response()->json([
-            "csrf_token" => csrf_token(),
+            "data" => csrf_token(),
+            "code" => 200,
         ], 200);
     }
 }
