@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Validator;
 
 class Brand extends Model
 {
@@ -18,6 +19,17 @@ class Brand extends Model
         'status',
         'parent_id'
     ];
+
+    public function validate($data)
+    {
+        $rules = [
+            "name" => "required",
+            "slug" => "required",
+            "description" => "required",
+            "image" => "required|url",
+        ];
+        return Validator::make($data, $rules);
+    }
     public function products()
     {
         return $this->hasMany(Product::class);

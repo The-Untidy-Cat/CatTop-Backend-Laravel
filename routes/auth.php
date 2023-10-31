@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\CsrfController;
-use App\Http\Controllers\ForgotPasswordController;
-use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\Api\CsrfController;
+use App\Http\Controllers\Api\ForgotPasswordController;
+use App\Http\Controllers\Api\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/csrf', [CsrfController::class, 'show'])->name('csrf');

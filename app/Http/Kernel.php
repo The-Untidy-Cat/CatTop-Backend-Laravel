@@ -34,7 +34,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            // 'xsrf.addHeader',
+                // 'xsrf.addHeader',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -44,7 +44,7 @@ class Kernel extends HttpKernel
         ],
 
         'auth' => [
-            // 'xsrf.addHeader',
+                // 'xsrf.addHeader',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -54,7 +54,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
         'customer' => [
-            // 'xsrf.addHeader',
+                // 'xsrf.addHeader',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -62,10 +62,11 @@ class Kernel extends HttpKernel
             AuthByCookie::class,
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
                 // \Illuminate\Routing\Middleware\ThrottleRequests::class.':customer',
+            \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
         'dash' => [
-            // 'xsrf.addHeader',
+                // 'xsrf.addHeader',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -73,7 +74,8 @@ class Kernel extends HttpKernel
             AuthByCookie::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            // \Illuminate\Routing\Middleware\ThrottleRequests::class.':dash',
+                // \Illuminate\Routing\Middleware\ThrottleRequests::class.':dash',
+            \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];

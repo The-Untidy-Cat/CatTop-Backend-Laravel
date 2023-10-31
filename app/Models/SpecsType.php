@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Validator;
 
 class SpecsType extends Model
 {
@@ -15,6 +16,18 @@ class SpecsType extends Model
         'slug',
         'description',
     ];
+
+    public $incrementing = false;
+
+    public function validate($data)
+    {
+        $rules = [
+            "name" => "required",
+            "slug" => "required",
+            "description" => "required",
+        ];
+        return Validator::make($data, $rules);
+    }
 
     public function specs(){
         return $this->hasMany(ProductModelSpecs::class,'specs_type','id');

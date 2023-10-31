@@ -16,11 +16,9 @@ return new class extends Migration
             $table->string('name')->nullable(false);
             $table->string('slug')->nullable(false);
             $table->text('description')->nullable(true);
+            $table->string('image')->nullable(true);
             $table->unsignedBigInteger('brand_id')->nullable(false);
             $table->foreign('brand_id')->references('id')->on('brands');
-            $table->unsignedBigInteger('price_before_discount')->nullable(false);
-            $table->unsignedDouble('discount_percent')->nullable(false);
-            $table->unsignedBigInteger('price')->nullable(false);
             $table->timestamps();
         });
     }

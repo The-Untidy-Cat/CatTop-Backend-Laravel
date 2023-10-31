@@ -1,6 +1,8 @@
 <?php
 
-use App\Http\Controllers\BrandController;
+use App\Http\Controllers\Api\BrandController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\SpecsTypeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,5 +23,12 @@ Route::prefix('brands')->group(function () {
     Route::get('/', [BrandController::class, 'index']);
     Route::get('/{id}', [BrandController::class, 'show']);
 });
-
+Route::prefix('products')->group(function () {
+    Route::get('/', [ProductController::class, 'index']);
+    Route::get('/{id}', [ProductController::class, 'show']);
+});
+Route::prefix('specs-types')->group(function () {
+    Route::get('/', [SpecsTypeController::class, 'index']);
+    Route::get('/{id}', [SpecsTypeController::class, 'show']);
+});
 

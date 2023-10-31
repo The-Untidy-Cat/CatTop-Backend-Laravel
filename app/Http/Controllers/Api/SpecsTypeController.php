@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\SpecsType;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class SpecsTypeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $specsTypes = SpecsType::all();
+        $database = new DatabaseController;
+        $specsTypes = $database->query($request, "specs_types", ["id", "name", "slug", "description"]);
         return response()->json([
             "code" => 200,
             "data" => $specsTypes
@@ -19,6 +21,13 @@ class SpecsTypeController extends Controller
     public function store(Request $request)
     {
         $specType = new SpecsType();
+        $validator = $specType->validate($request->all());
+        if ($validator->fails()) {
+            return response()->json([
+                "code" => 400,
+                "data" => $validator->errors()
+            ], 400);
+        }
         $specType->name = $request->name;
         $specType->id = $request->id;
         $specType->slug = $request->slug;
@@ -49,13 +58,13 @@ class SpecsTypeController extends Controller
         if (is_null($specType)) {
             return response()->json([
                 "code" => 404,
-                "message" => "Not found"
+                "message" => "Not founda"
             ], 404);
         }
-        $specType->name = $request->name;
-        $specType->id = $request->id;
-        $specType->slug = $request->slug;
-        $specType->description = $request->description;
+        $specType->name = $request->name ?? $specType->name;
+        $specType->id = $request->id ?? $specType->id;
+        $specType->slug = $request->slug ?? $specType->slug;
+        $specType->description = $request->description ?? $specType->description;
         $specType->save();
         return response()->json([
             "code" => 200,
@@ -73,8 +82,8 @@ class SpecsTypeController extends Controller
         }
         $specType->delete();
         return response()->json([
-            "code" => 204,
+            "code" => 200,
             "message" => "Specs type deleted"
-        ], 204);
+        ], 200);
     }
 }
