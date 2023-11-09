@@ -22,7 +22,6 @@ class CsrfController extends Controller
                 "code" => 200,
             ], 200);
         }
-
         return response()->json([
             "data" => csrf_token(),
             "code" => 200,

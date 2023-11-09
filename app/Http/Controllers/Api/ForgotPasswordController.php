@@ -22,7 +22,7 @@ class ForgotPasswordController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return new JsonResponse(['code' => 400, 'message' => $validator->errors()], 422);
+            return new JsonResponse(['code' => 400, 'message' => $validator->errors()], 400);
         }
 
         $customer = Customer::where('email', $request->all()['email'])->exists();
@@ -32,7 +32,10 @@ class ForgotPasswordController extends Controller
             $user = Customer::where('email', $request->all()['email'])->first()->user()->first();
         } else if ($employee) {
             $user = Employee::where('email', $request->all()['email'])->first()->user()->first();
+        } else {
+            return new JsonResponse(['code' => 400, 'message' => "This email does not exist"], 400);
         }
+
         if ($user) {
             $verify2 = DB::table('password_reset_tokens')->where([
                 ['email', $request->all()['email']]
