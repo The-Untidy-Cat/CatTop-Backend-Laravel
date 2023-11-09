@@ -17,12 +17,12 @@ class ResetPasswordController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'token' => ['required']
+            'password' => ['required', 'string', 'min:8'],
+            'token' => ['required', 'regex:/^[0-9]{6}$/']
         ]);
 
         if ($validator->fails()) {
-            return new JsonResponse(['code' => 422, 'message' => $validator->errors()], 422);
+            return new JsonResponse(['code' => 400, 'message' => 'Thông tin không hợp lệ', 'errors' => $validator->errors()], 400);
         }
         $check = DB::table('password_reset_tokens')->where([
             ['email', $request->all()['email']],
@@ -31,8 +31,8 @@ class ResetPasswordController extends Controller
 
         if ($check->exists()) {
             $difference = Carbon::now()->diffInSeconds($check->first()->created_at);
-            if ($difference > 3600) {
-                return new JsonResponse(['code' => 400, 'message' => "Token Expired"], 400);
+            if ($difference > env('OTP_MAX_AGE', 300)) {
+                return new JsonResponse(['code' => 400, 'message' => "Mã OTP đã hết hạn"], 400);
             }
             $customer = Customer::where('email', $request->all()['email'])->exists();
             $employee = Employee::where('email', $request->all()['email'])->exists();
@@ -54,7 +54,7 @@ class ResetPasswordController extends Controller
                 return new JsonResponse(
                     [
                         'code' => 200,
-                        'message' => "Your password has been reset",
+                        'message' => "Cập nhật mật khẩu thành công",
                     ],
                     200
                 );
@@ -62,7 +62,7 @@ class ResetPasswordController extends Controller
                 return new JsonResponse(
                     [
                         'code' => 400,
-                        'message' => "User not found",
+                        'message' => "Không tìm thấy người dùng",
                     ],
                     400
                 );
@@ -71,7 +71,7 @@ class ResetPasswordController extends Controller
             return new JsonResponse(
                 [
                     'code' => 400,
-                    'message' => "Invalid token"
+                    'message' => "Mã OTP không hợp lệ",
                 ],
                 401
             );

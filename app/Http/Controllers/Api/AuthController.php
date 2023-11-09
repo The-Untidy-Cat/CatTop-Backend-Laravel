@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Rules\PhoneNumber;
+use App\Rules\Username;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -13,18 +15,19 @@ class AuthController extends Controller
     public function customerRegister(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'phone_number' => 'required|unique:customers',
-            'email' => 'required|unique:customers',
-            'username' => 'required|unique:users|min:6',
+            'first_name' => ['required', 'regex:/[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+/u'],
+            // regex for vietnamese name
+            'last_name' => ['required', 'regex:/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]*$/u'],
+            'phone_number' => ['required', new PhoneNumber()],
+            'email' => 'required|unique:customers|unique:employees',
+            'username' => ['required', 'unique:users', new Username()],
             'password' => 'required|min:6',
         ]);
 
         if ($validate->fails()) {
             return response()->json([
                 'status' => 400,
-                'message' => 'Validation error',
+                'message' => 'Thông tin không hợp lệ',
                 'errors' => $validate->errors()
             ], 400);
         }
@@ -33,8 +36,8 @@ class AuthController extends Controller
             'password' => bcrypt($request->password),
         ]);
         $user->customer()->create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
+            'first_name' => trim(strtoupper($request->first_name)),
+            'last_name' => trim(strtoupper($request->last_name)),
             'phone_number' => $request->phone_number,
             'email' => $request->email,
         ]);
@@ -159,6 +162,6 @@ class AuthController extends Controller
             "status" => 200,
             "message" => "Logout success"
         ])
-        ->withCookie(cookie('auth_token', null, -1));
+            ->withCookie(cookie('auth_token', null, -1));
     }
 }

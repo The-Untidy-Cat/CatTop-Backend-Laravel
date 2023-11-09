@@ -12,18 +12,30 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ForgotPasswordController extends Controller
 {
     public function forgotPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => ['required', 'string', 'email', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'exists:customers,email'],
         ]);
 
         if ($validator->fails()) {
-            return new JsonResponse(['code' => 400, 'message' => $validator->errors()], 400);
+            return new JsonResponse(['code' => 400, 'message' => 'Thông tin không hợp lệ', 'errors' => $validator->errors()], 400);
         }
+
+        $check = DB::table('password_reset_tokens')->where([
+            ['email', $request->all()['email']],
+        ]);
+
+        // if ($check->exists()) {
+        //     $difference = Carbon::now()->diffInSeconds($check->first()->created_at);
+        //     if ($difference <= env('OTP_MAX_AGE', 300)) {
+        //         return new JsonResponse(['code' => 400, 'message' => "Gửi yêu cầu quá nhiều lần. Vui lòng thử lại sau"], 400);
+        //     }
+        // }
 
         $customer = Customer::where('email', $request->all()['email'])->exists();
         $employee = Employee::where('email', $request->all()['email'])->exists();
@@ -32,8 +44,6 @@ class ForgotPasswordController extends Controller
             $user = Customer::where('email', $request->all()['email'])->first()->user()->first();
         } else if ($employee) {
             $user = Employee::where('email', $request->all()['email'])->first()->user()->first();
-        } else {
-            return new JsonResponse(['code' => 400, 'message' => "This email does not exist"], 400);
         }
 
         if ($user) {
@@ -58,7 +68,10 @@ class ForgotPasswordController extends Controller
                 return new JsonResponse(
                     [
                         'code' => 200,
-                        'message' => "Please check your email for a 6 digit pin"
+                        'message' => "Kiểm tra email để lấy mã OTP",
+                        'data' => [
+                            'max_age' => env('OTP_MAX_AGE', 300),
+                        ]
                     ],
                     200
                 );
@@ -67,7 +80,7 @@ class ForgotPasswordController extends Controller
             return new JsonResponse(
                 [
                     'code' => 400,
-                    'message' => "This email does not exist"
+                    'message' => "Địa chỉ email không tồn tại"
                 ],
                 400
             );
@@ -77,7 +90,7 @@ class ForgotPasswordController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'string', 'email', 'max:255'],
-            'token' => ['required'],
+            'token' => ['required', 'regex:/^[0-9]{6}$/']
         ]);
 
         if ($validator->fails()) {
@@ -91,8 +104,8 @@ class ForgotPasswordController extends Controller
 
         if ($check->exists()) {
             $difference = Carbon::now()->diffInSeconds($check->first()->created_at);
-            if ($difference > 3600) {
-                return new JsonResponse(['code' => 400, 'message' => "Token Expired"], 400);
+            if ($difference > env('OTP_MAX_AGE', 300)) {
+                return new JsonResponse(['code' => 400, 'message' => "Mã OTP đã hết hạn"], 400);
             }
 
             // $delete = DB::table('password_reset_tokens')->where([
@@ -103,7 +116,7 @@ class ForgotPasswordController extends Controller
             return new JsonResponse(
                 [
                     'code' => 200,
-                    'message' => "You can now reset your password"
+                    'message' => "Mã OTP hợp lệ"
                 ],
                 200
             );
@@ -111,7 +124,7 @@ class ForgotPasswordController extends Controller
             return new JsonResponse(
                 [
                     'code' => 400,
-                    'message' => "Invalid token"
+                    'message' => "Mã OTP không hợp lệ"
                 ],
                 401
             );
