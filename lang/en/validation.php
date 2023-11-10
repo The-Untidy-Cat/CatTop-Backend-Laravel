@@ -153,6 +153,7 @@ return [
     'uuid' => 'The :attribute field must be a valid UUID.',
     'username' => 'The :attribute field only accepts letters, numbers, dots.',
     'phone_number' => 'The :attribute field must be a valid phone number.',
+    'existed_email' => 'This email is not existed.',
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines

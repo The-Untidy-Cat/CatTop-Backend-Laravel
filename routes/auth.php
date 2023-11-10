@@ -13,3 +13,4 @@ Route::post('/reset-password', [ResetPasswordController::class, 'resetPassword']
 Route::post("/register", [AuthController::class, "customerRegister"]);
 Route::post("/customer", [AuthController::class, "customerBasicLogin"]);
 Route::post("/dash", [AuthController::class, "employeesBasicLogin"]);
+Route::middleware(['auth:sanctum'])->delete("/logout", [AuthController::class, "logout"]);

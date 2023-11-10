@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\XSRFController;
 use App\Http\Middleware\AuthByCookie;
 use App\Http\Middleware\DashPermission;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Session\Middleware\StartSession;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
 class Kernel extends HttpKernel
@@ -46,7 +47,8 @@ class Kernel extends HttpKernel
                 // 'xsrf.addHeader',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            StartSession::class,
+            // \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -55,6 +57,7 @@ class Kernel extends HttpKernel
                 // 'xsrf.addHeader',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             AuthByCookie::class,
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
@@ -66,6 +69,7 @@ class Kernel extends HttpKernel
                 // 'xsrf.addHeader',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             AuthByCookie::class,
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,

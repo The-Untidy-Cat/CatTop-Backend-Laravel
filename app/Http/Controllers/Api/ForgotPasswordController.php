@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Employee;
+use App\Rules\ExistedEmail;
 use Illuminate\Http\Request;
 use App\Mail\ResetPassword;
 use Carbon\Carbon;
@@ -12,23 +13,22 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class ForgotPasswordController extends Controller
 {
     public function forgotPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => ['required', 'string', 'email', 'max:255', 'exists:customers,email'],
+            'email' => ['required', 'string', 'email', 'max:255', new ExistedEmail()],
         ]);
 
         if ($validator->fails()) {
             return new JsonResponse(['code' => 400, 'message' => 'Thông tin không hợp lệ', 'errors' => $validator->errors()], 400);
         }
 
-        $check = DB::table('password_reset_tokens')->where([
-            ['email', $request->all()['email']],
-        ]);
+        // $check = DB::table('password_reset_tokens')->where([
+        //     ['email', $request->all()['email']],
+        // ]);
 
         // if ($check->exists()) {
         //     $difference = Carbon::now()->diffInSeconds($check->first()->created_at);

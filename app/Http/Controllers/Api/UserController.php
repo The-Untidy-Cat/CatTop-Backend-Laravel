@@ -15,34 +15,36 @@ class UserController extends Controller
         $employee = $request->user()->employee()->first();
         try {
             return response()->json([
-                'status' => 200,
+                'code' => 200,
                 'message' => 'Get profile success',
-                'data' => $customer ? ($customer->only([
-                    "first_name",
-                    "last_name",
-                    "email",
-                    "phone_number",
-                    "date_of_birth",
-                    "gender"
-                ])) : ($employee ? $employee->only([
+                'data' => [
+                    'user' => $customer ? ($customer->only([
                         "first_name",
                         "last_name",
                         "email",
                         "phone_number",
                         "date_of_birth",
                         "gender"
-                    ]) : [
-                        "first_name" => null,
-                        "last_name" => null,
-                        "email" => null,
-                        "phone_number" => null,
-                        "date_of_birth" => null,
-                        "gender" => null
-                    ]),
+                    ])) : ($employee ? $employee->only([
+                            "first_name",
+                            "last_name",
+                            "email",
+                            "phone_number",
+                            "date_of_birth",
+                            "gender"
+                        ]) : [
+                            "first_name" => null,
+                            "last_name" => null,
+                            "email" => null,
+                            "phone_number" => null,
+                            "date_of_birth" => null,
+                            "gender" => null
+                        ])
+                ],
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
-                'status' => 500,
+                'code' => 500,
                 'message' => 'Get profile failed',
                 'data' => null,
             ], 500);

@@ -18,7 +18,7 @@ class CustomerPermission
         $role = $request->user()->userRole()->whereIn('role_id', [3])->get();
         if ($role->isEmpty()) {
             return response()->json([
-                'status' => 403,
+                'code' =>  403,
                 'message' => 'Forbidden'
             ], 403);
         }

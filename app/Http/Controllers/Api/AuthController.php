@@ -26,7 +26,7 @@ class AuthController extends Controller
 
         if ($validate->fails()) {
             return response()->json([
-                'status' => 400,
+                'code' => 400,
                 'message' => 'Thông tin không hợp lệ',
                 'errors' => $validate->errors()
             ], 400);
@@ -45,7 +45,7 @@ class AuthController extends Controller
             'role_id' => 3,
         ]);
         return response()->json([
-            'status' => 200,
+            'code' => 200,
             'message' => 'Register success',
             'data' => [
                 'user' => $user,
@@ -61,7 +61,7 @@ class AuthController extends Controller
 
         if ($credentials->fails()) {
             return response()->json([
-                'status' => 400,
+                'code' => 400,
                 'message' => 'Validation error',
                 'errors' => $credentials->errors()
             ], 400);
@@ -77,7 +77,7 @@ class AuthController extends Controller
 
             if ($role->isEmpty()) {
                 return response()->json([
-                    'status' => 401,
+                    'code' => 401,
                     'message' => 'You are not allowed to access this page'
                 ], 401);
             }
@@ -86,7 +86,7 @@ class AuthController extends Controller
             $cookie = cookie('auth_token', $token, 60 * 24 * 30, null, null, null, true, false, 'None'); // set the cookie for 7 days
 
             return response()->json([
-                'status' => 200,
+                'code' => 200,
                 'message' => 'Login success',
                 'data' => [
                     'user' => Auth::user(),
@@ -95,8 +95,8 @@ class AuthController extends Controller
             ], 200)->withCookie($cookie);
         } else {
             return response()->json([
-                'status' => 401,
-                'message' => 'Invalid credentials',
+                'code' => 401,
+                'message' => 'Thông tin không đúng',
             ], 401);
         }
     }
@@ -109,7 +109,7 @@ class AuthController extends Controller
 
         if ($credentials->fails()) {
             return response()->json([
-                'status' => 400,
+                'code' => 400,
                 'message' => 'Validation error',
                 'errors' => $credentials->errors()
             ], 400);
@@ -125,7 +125,7 @@ class AuthController extends Controller
 
             if ($role->isEmpty()) {
                 return response()->json([
-                    'status' => 401,
+                    'code' => 401,
                     'message' => 'You are not allowed to access this page'
                 ], 401);
             }
@@ -134,7 +134,7 @@ class AuthController extends Controller
             $cookie = cookie('auth_token', $token, 60 * 24 * 30, null, null, null, true, false, 'None'); // set the cookie for 7 days
 
             return response()->json([
-                'status' => 200,
+                'code' => 200,
                 'message' => 'Login success',
                 'data' => [
                     'user' => Auth::user()->customer()->first()->only([
@@ -149,18 +149,22 @@ class AuthController extends Controller
             ], 200)->withCookie($cookie);
         } else {
             return response()->json([
-                'status' => 401,
-                'message' => 'Invalid credentials',
+                'code' => 401,
+                'message' => 'Thông tin không đúng',
             ], 401);
         }
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        // // Get user who requested the logout
+        // $user = request()->user(); //or Auth::user()
+
+        // // Revoke current user token
+        // $user->tokens()->where('id', $user->currentAccessToken()->id)->delete();
         return response()->json([
-            "status" => 200,
-            "message" => "Logout success"
+            'code' => 200,
+            "message" => "Đăng xuất thành công"
         ])
             ->withCookie(cookie('auth_token', null, -1));
     }
