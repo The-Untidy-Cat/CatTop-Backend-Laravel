@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CustomerState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
@@ -28,6 +29,10 @@ class Customer extends Model
     {
         return $this->belongsTo(User::class, "user_id", "id");
     }
+
+    protected $casts = [
+        'state' => CustomerState::class,
+    ];
 
     public function validator($data)
     {

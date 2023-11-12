@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Rules\PhoneNumber;
@@ -27,7 +28,7 @@ class AuthController extends Controller
         if ($validate->fails()) {
             return response()->json([
                 'code' => 400,
-                'message' => 'Thông tin không hợp lệ',
+                'message' => __('messages.register.failed'),
                 'errors' => $validate->errors()
             ], 400);
         }
@@ -46,7 +47,7 @@ class AuthController extends Controller
         ]);
         return response()->json([
             'code' => 200,
-            'message' => 'Register success',
+            'message' => __('messages.register.success'),
             'data' => [
                 'user' => $user,
             ]
@@ -62,7 +63,7 @@ class AuthController extends Controller
         if ($credentials->fails()) {
             return response()->json([
                 'code' => 400,
-                'message' => 'Validation error',
+                'message' => __('messages.validation.error'),
                 'errors' => $credentials->errors()
             ], 400);
         }
@@ -73,12 +74,14 @@ class AuthController extends Controller
                 'password' => $request->password
             ])
         ) {
-            $role = Auth::user()->userRole()->whereIn('role_id', [1, 2, 4, 5, 6, 7, 8, 9])->get();
+            // echo (UserRole::ADMIN->value);
+            // echo Auth::user()->userRole()->first()->role_id;
+            $role = Auth::user()->userRole()->whereIn('role_id', [UserRole::ADMIN, UserRole::SELLER])->get();
 
             if ($role->isEmpty()) {
                 return response()->json([
                     'code' => 401,
-                    'message' => 'You are not allowed to access this page'
+                    'message' => __('messages.login.forbidden')
                 ], 401);
             }
             $token = Auth::user()->createToken('authToken')->plainTextToken;
@@ -87,7 +90,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'code' => 200,
-                'message' => 'Login success',
+                'message' => __('messages.login.success'),
                 'data' => [
                     'user' => Auth::user(),
                     'token' => $token
@@ -96,7 +99,7 @@ class AuthController extends Controller
         } else {
             return response()->json([
                 'code' => 401,
-                'message' => 'Thông tin không đúng',
+                'message' => __('messages.login.invalid')
             ], 401);
         }
     }
@@ -110,7 +113,7 @@ class AuthController extends Controller
         if ($credentials->fails()) {
             return response()->json([
                 'code' => 400,
-                'message' => 'Validation error',
+                'message' => __('messages.validation.error'),
                 'errors' => $credentials->errors()
             ], 400);
         }
@@ -126,7 +129,7 @@ class AuthController extends Controller
             if ($role->isEmpty()) {
                 return response()->json([
                     'code' => 401,
-                    'message' => 'You are not allowed to access this page'
+                    'message' => __('messages.login.forbidden')
                 ], 401);
             }
             $token = Auth::user()->createToken('authToken')->plainTextToken;
@@ -150,7 +153,7 @@ class AuthController extends Controller
         } else {
             return response()->json([
                 'code' => 401,
-                'message' => 'Thông tin không đúng',
+                'message' => __('messages.login.invalid'),
             ], 401);
         }
     }
@@ -164,8 +167,8 @@ class AuthController extends Controller
         // $user->tokens()->where('id', $user->currentAccessToken()->id)->delete();
         return response()->json([
             'code' => 200,
-            "message" => "Đăng xuất thành công"
-        ])
+            "message" => __('messages.logout.success')
+        ], 200)
             ->withCookie(cookie('auth_token', null, -1));
     }
 }

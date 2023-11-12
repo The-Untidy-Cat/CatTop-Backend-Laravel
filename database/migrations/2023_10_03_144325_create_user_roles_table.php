@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Role;
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,9 +14,8 @@ return new class extends Migration {
     {
         Schema::create('user_roles', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('role_id');
+            $table->integer('role_id')->nullable(false)->default(UserRole::CUSTOMER);
             $table->primary(['user_id', 'role_id']);
-            $table->foreign('role_id')->references('id')->on('roles')->cascadeOnDelete();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });
@@ -24,7 +23,7 @@ return new class extends Migration {
         DB::table('user_roles')->insert(
             [
                 'user_id' => User::where('username', 'admin')->first()->id,
-                'role_id' => Role::where('name', 'admin')->first()->id,
+                'role_id' => UserRole::ADMIN,
             ]
         );
     }

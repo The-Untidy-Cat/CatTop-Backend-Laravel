@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\EmployeeState;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -22,7 +23,7 @@ return new class extends Migration
             $table->boolean('gender')->nullable();
             $table->string('department', 100);
             $table->string('job_title', 100);
-            $table->integer('status')->nullable(false)->default(1);
+            $table->integer('state')->nullable(false)->default(EmployeeState::ACTIVE);
             $table->unsignedBigInteger('manager_id')->nullable();
             $table->foreign('manager_id')->references('id')->on('employees')->cascadeOnDelete();
             $table->unsignedBigInteger('user_id')->nullable();

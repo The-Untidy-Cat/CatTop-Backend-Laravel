@@ -34,9 +34,9 @@ class SpecsTypeController extends Controller
         $specType->description = $request->description;
         $specType->save();
         return response()->json([
-            "code" => 201,
+            "code" => 200,
             "data" => $specType
-        ], 201);
+        ], 200);
     }
     public function show($id)
     {

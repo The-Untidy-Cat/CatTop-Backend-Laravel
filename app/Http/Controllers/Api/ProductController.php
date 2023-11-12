@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -21,6 +22,9 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $product = new Product();
+        if ($request->slug == null) {
+            $request->slug = Str::slug($request->name, "-");
+        }
         $validator = $product->validate($request->all());
         if ($validator->fails()) {
             return response()->json([
@@ -29,16 +33,15 @@ class ProductController extends Controller
             ], 400);
         }
         $product->name = $request->name;
-        $product->id = $request->id;
         $product->slug = $request->slug;
         $product->description = $request->description;
         $product->brand_id = $request->brand_id;
         $product->image = $request->image;
         $product->save();
         return response()->json([
-            "code" => 201,
+            "code" => 200,
             "data" => $product
-        ], 201);
+        ], 200);
     }
     public function update(Request $request, $id)
     {
@@ -58,15 +61,15 @@ class ProductController extends Controller
         }
         $product->name = $request->name ?? $product->name;
         $product->id = $request->id ?? $product->id;
-        $product->slug = $request->slug ?? $product->slug;
+        $product->slug = $request->slug ?? Str::slug($product->name, "-");
         $product->description = $request->description ?? $product->description;
         $product->brand_id = $request->brand_id ?? $product->brand_id;
         $product->image = $request->image ?? $product->image;
         $product->save();
         return response()->json([
-            "code" => 201,
+            "code" => 200,
             "data" => $product
-        ], 201);
+        ], 200);
     }
     public function show($id)
     {

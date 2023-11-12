@@ -10,13 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('product_model_specs', function (Blueprint $table) {
-            $table->unsignedBigInteger('product_model_id')->nullable(false);
+        Schema::create('product_variant_specs', function (Blueprint $table) {
+            $table->unsignedBigInteger('product_variant_id')->nullable(false);
             $table->string('specs_type')->nullable(false);
             $table->string('value');
-            $table->primary(['product_model_id', 'specs_type']);
-            $table->foreign('product_model_id')->references('id')->on('product_models')->onDelete('cascade');
-            $table->foreign('specs_type')->references('id')->on('specs_types')->onDelete('cascade');
+            $table->primary(['product_variant_id', 'specs_type']);
+            $table->foreign('product_variant_id')->references('id')->on('product_variants')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_model_specs');
+        Schema::dropIfExists('product_variant_specs');
     }
 };

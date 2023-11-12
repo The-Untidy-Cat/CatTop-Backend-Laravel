@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EmployeeState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
@@ -44,4 +45,8 @@ class Employee extends Model
         ];
         return Validator::make($data, $rules);
     }
+
+    protected $casts = [
+        'state' => EmployeeState::class,
+    ];
 }

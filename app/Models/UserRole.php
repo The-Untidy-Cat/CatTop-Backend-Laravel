@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use \App\Enums\UserRole as UserRoleEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +14,10 @@ class UserRole extends Model
     protected $fillable = [
         'user_id',
         'role_id',
+    ];
+
+    protected $cast = [
+        'role_id' => UserRoleEnum::class,
     ];
 
     // public function user()

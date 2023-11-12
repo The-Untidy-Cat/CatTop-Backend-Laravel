@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductModelSpecs extends Model
+class ProductVariantSpecs extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'product_model_id',
+        'product_variant_id',
         'specs_type',
         'value'
     ];
 
     public function model(){
-        return $this->belongsTo(ProductModel::class, 'product_model_id', 'id');
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id', 'id');
     }
 
     public function specsType(){

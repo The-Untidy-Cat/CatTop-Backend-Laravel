@@ -30,6 +30,6 @@ class SpecsType extends Model
     }
 
     public function specs(){
-        return $this->hasMany(ProductModelSpecs::class,'specs_type','id');
+        return $this->hasMany(ProductVariantSpecs::class,'specs_type','id');
     }
 }

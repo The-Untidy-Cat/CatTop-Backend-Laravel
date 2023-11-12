@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\BrandController;
+use App\Enums\BrandState;
+use App\Http\Controllers\Api\BrandController as BrandController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SpecsTypeController;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +21,7 @@ Route::get('/', function () {
     return ['message' => "Server is running"];
 });
 Route::prefix('brands')->group(function () {
-    Route::get('/', [BrandController::class, 'index']);
+    Route::get('/', [BrandController::class, 'index'])->name('web.brands.index');
     Route::get('/{id}', [BrandController::class, 'show']);
 });
 Route::prefix('products')->group(function () {

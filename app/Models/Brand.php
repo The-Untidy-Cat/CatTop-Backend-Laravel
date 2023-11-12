@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\BrandState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
@@ -45,5 +46,8 @@ class Brand extends Model
     protected $attributes = [
         'status' => 1,
         'parent_id' => NULL,
+    ];
+    protected $casts = [
+        'state' => BrandState::class,
     ];
 }

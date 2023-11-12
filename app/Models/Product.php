@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ProductState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
@@ -23,7 +24,7 @@ class Product extends Model
     }
     public function model()
     {
-        return $this->hasMany(ProductModel::class, 'product_id', 'id');
+        return $this->hasMany(ProductVariant::class, 'product_id', 'id');
     }
     public function validator($data)
     {
@@ -35,4 +36,7 @@ class Product extends Model
         ];
         return Validator::make($data, $rules);
     }
+    protected $casts = [
+        'state' => ProductState::class,
+    ];
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\BrandState;
 use App\Http\Controllers\Controller;
 
 use App\Models\Brand;
@@ -12,6 +13,16 @@ class BrandController extends Controller
 {
     public function index(Request $request)
     {
+        if ($request->route()->getName() == "web.brands.index") {
+            $request->merge([
+                "conditions" =>
+                    [
+                        'column' => 'state',
+                        'operator' => '=',
+                        'value' => BrandState::ACTIVE
+                    ]
+            ]);
+        }
         $db = new DB;
         $data = $db->query($request, "brands", ["id", "name", "description", "image"]);
         return response()->json(["data" => $data, "code" => 200], 200);
@@ -31,7 +42,7 @@ class BrandController extends Controller
             $brand->parent_id = request("parent_id");
         }
         $brand->save();
-        return response()->json(["data" => $brand, "code" => 201], 201);
+        return response()->json(["data" => $brand, "code" => 200], 200);
     }
     public function show($id)
     {
