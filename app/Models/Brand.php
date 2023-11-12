@@ -44,7 +44,7 @@ class Brand extends Model
         return $this->belongsTo(Brand::class,'parent_id');
     }
     protected $attributes = [
-        'status' => 1,
+        'state' => BrandState::ACTIVE,
         'parent_id' => NULL,
     ];
     protected $casts = [

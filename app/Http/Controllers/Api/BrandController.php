@@ -13,18 +13,22 @@ class BrandController extends Controller
 {
     public function index(Request $request)
     {
+
         if ($request->route()->getName() == "web.brands.index") {
             $request->merge([
-                "conditions" =>
+                "conditions" => [
                     [
-                        'column' => 'state',
-                        'operator' => '=',
-                        'value' => BrandState::ACTIVE
+                        'state',
+                        '=',
+                        BrandState::ACTIVE,
                     ]
+                ]
+
             ]);
         }
+        // echo $request->conditions;
         $db = new DB;
-        $data = $db->query($request, "brands", ["id", "name", "description", "image"]);
+        $data = $db->query($request, "brands", ["id", "name", "description", "image"], $request->conditions);
         return response()->json(["data" => $data, "code" => 200], 200);
     }
     public function store()

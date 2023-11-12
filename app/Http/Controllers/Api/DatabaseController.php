@@ -12,12 +12,11 @@ class DatabaseController extends Controller
     {
         $data = DB::table($table)->select($column);
         if ($request->has("search")) {
-
             $data = $data->where("name", "like", "%" . $request->search . "%");
         }
+
         foreach ($conditions as $condition) {
-            if (isset($condition["column"]) && isset($condition["operator"]) && isset($condition["value"]))
-                $data = $data->where($condition["column"], $condition["operator"], $condition["value"]);
+                $data = $data->where($condition[0], $condition[1], $condition[2]);
         }
         $length = $data->count();
         $offset = $request->has("offset") ? $request->offset : 0;

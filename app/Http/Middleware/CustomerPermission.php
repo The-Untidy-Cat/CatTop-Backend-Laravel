@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserRole;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +16,7 @@ class CustomerPermission
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $role = $request->user()->userRole()->whereIn('role_id', [3])->get();
+        $role = $request->user()->userRole()->whereIn('role_id', [UserRole::CUSTOMER])->get();
         if ($role->isEmpty()) {
             return response()->json([
                 'code' =>  403,
