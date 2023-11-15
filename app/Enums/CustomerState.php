@@ -10,10 +10,10 @@ enum CustomerState: int
     public static function toArray(): array
     {
         return [
-            self::DRAFT,
-            self::ACTIVE,
-            self::INACTIVE,
-            self::BANNED,
+            self::DRAFT->value,
+            self::ACTIVE->value,
+            self::INACTIVE->value,
+            self::BANNED->value,
         ];
     }
     public function label(): string

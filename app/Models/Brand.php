@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\BrandState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Validator;
 
 class Brand extends Model
@@ -31,10 +32,13 @@ class Brand extends Model
         ];
         return Validator::make($data, $rules);
     }
-    public function products()
+    public function products(): HasMany
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class, "brand", "id");
     }
+    // public function brandable(){
+    //     return $this->morphTo();
+    // }
     public function children()
     {
         return $this->hasMany(Brand::class, 'parent_id');

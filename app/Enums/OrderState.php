@@ -1,27 +1,27 @@
 <?php
 namespace App\Enums;
 
-enum OrderState: int
+enum OrderState: string
 {
-    case DRAFT = 0;
-    case PENDING = 1;
-    case CONFIRMED = 2;
-    case DELIVERING = 3;
-    case DELIVERED = 4;
-    case CANCELLED = 5;
-    case REFUNDED = 7;
-    case FAILED = 8;
+    case DRAFT = 'draft';
+    case PENDING = 'pending';
+    case CONFIRMED = 'confirmed';
+    case DELIVERING = 'delivering';
+    case DELIVERED = 'delivered';
+    case CANCELLED = 'cancelled';
+    case REFUNDED = 'refunded';
+    case FAILED = 'failed';
     public static function toArray(): array
     {
         return [
-            self::DRAFT,
-            self::PENDING,
-            self::CONFIRMED,
-            self::DELIVERING,
-            self::DELIVERED,
-            self::CANCELLED,
-            self::REFUNDED,
-            self::FAILED,
+            self::DRAFT->value,
+            self::PENDING->value,
+            self::CONFIRMED->value,
+            self::DELIVERING->value,
+            self::DELIVERED->value,
+            self::CANCELLED->value,
+            self::REFUNDED->value,
+            self::FAILED->value,
         ];
     }
     public function label(): string

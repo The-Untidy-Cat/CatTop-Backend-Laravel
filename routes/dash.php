@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SpecsTypeController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\BrandController;
+use App\Http\Controllers\Api\OrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,6 +43,13 @@ Route::middleware(['auth:sanctum', 'auth.dash'])->group(
             Route::get('/{id}', [ProductController::class, 'show']);
             Route::put('/{id}', [ProductController::class, 'update']);
             Route::delete('/{id}', [ProductController::class, 'destroy']);
+        });
+        Route::group(['prefix' => '/orders'], function () {
+            Route::get('/', [OrderController::class, 'index'])->name('dash.order.index');
+            Route::post('/', [OrderController::class, 'store'])->name('dash.order.store');
+            // Route::get('/{id}', [ProductController::class, 'show']);
+            // Route::put('/{id}', [ProductController::class, 'update']);
+            // Route::delete('/{id}', [ProductController::class, 'destroy']);
         });
     }
 );

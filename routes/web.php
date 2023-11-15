@@ -22,14 +22,14 @@ Route::get('/', function () {
 });
 Route::prefix('brands')->group(function () {
     Route::get('/', [BrandController::class, 'index'])->name('web.brands.index');
-    Route::get('/{id}', [BrandController::class, 'show']);
+    Route::get('/{id}', [BrandController::class, 'show'])->name('web.brand.show');
 });
 Route::prefix('products')->group(function () {
-    Route::get('/', [ProductController::class, 'index']);
-    Route::get('/{id}', [ProductController::class, 'show']);
+    Route::get('/', [ProductController::class, 'index'])->name('web.product.index');
+    Route::get('/{id}', [ProductController::class, 'show'])->name('web.product.show');
 });
-Route::prefix('specs-types')->group(function () {
-    Route::get('/', [SpecsTypeController::class, 'index']);
-    Route::get('/{id}', [SpecsTypeController::class, 'show']);
-});
+// Route::prefix('specs-types')->group(function () {
+//     Route::get('/', [SpecsTypeController::class, 'index']);
+//     Route::get('/{id}', [SpecsTypeController::class, 'show']);
+// });
 

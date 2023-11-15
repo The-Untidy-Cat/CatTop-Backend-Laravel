@@ -13,10 +13,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('user_roles', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id');
-            $table->integer('role_id')->nullable(false)->default(UserRole::CUSTOMER);
+            $table->foreignIdFor(User::class, "user_id")->references("id")->on('users');
+            $table->enum('role_id', UserRole::toArray())->nullable(false)->default(UserRole::CUSTOMER);
             $table->primary(['user_id', 'role_id']);
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });
 

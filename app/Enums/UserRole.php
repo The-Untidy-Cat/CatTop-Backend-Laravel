@@ -1,17 +1,17 @@
 <?php
 namespace App\Enums;
 
-enum UserRole: int
+enum UserRole: string
 {
-    case ADMIN = 0;
-    case CUSTOMER = 1;
-    case SELLER = 2;
+    case ADMIN = 'admin';
+    case CUSTOMER = 'customer';
+    case SELLER = 'seller';
     public static function toArray(): array
     {
         return [
-            self::ADMIN,
-            self::CUSTOMER,
-            self::SELLER,
+            self::ADMIN->value,
+            self::CUSTOMER->value,
+            self::SELLER->value,
         ];
     }
     public function label(): string

@@ -1,19 +1,19 @@
 <?php
 namespace App\Enums;
 
-enum ProductVariantState: int
+enum ProductVariantState: string
 {
-    case DRAFT = 0;
-    case PUBLISHED = 1;
-    case ARCHIVED = 2;
-    case OUT_OF_STOCK = 3;
+    case DRAFT = 'draft';
+    case PUBLISHED = 'published';
+    case ARCHIVED = 'archived';
+    case OUT_OF_STOCK = 'out_of_stock';
     public static function toArray(): array
     {
         return [
-            self::DRAFT,
-            self::PUBLISHED,
-            self::ARCHIVED,
-            self::OUT_OF_STOCK,
+            self::DRAFT->value,
+            self::PUBLISHED->value,
+            self::ARCHIVED->value,
+            self::OUT_OF_STOCK->value,
         ];
     }
     public function label(): string
@@ -29,5 +29,5 @@ enum ProductVariantState: int
             self::OUT_OF_STOCK => __('messages.product_variant.state.out_of_stock'),
         };
     }
-    
+
 }

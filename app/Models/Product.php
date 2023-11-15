@@ -16,17 +16,22 @@ class Product extends Model
         'slug',
         'description',
         'brand_id',
-        'image',
+    ];
+    protected $hidden = ["brand_id"];
+    protected $with = [
+        'brand',
+        // // 'variants:name,id,image,sku,standard_price,sale_price,product_id,specifications'
     ];
     public function brand()
     {
-        return $this->belongsTo(Brand::class);
+        return $this->belongsTo(Brand::class, 'brand_id', 'id')->select(['id', 'name', 'image']);
     }
-    public function model()
+    public function variants()
     {
         return $this->hasMany(ProductVariant::class, 'product_id', 'id');
+        // ->select(['id', 'name', 'image', 'SKU', 'standard_price', 'sale_price', 'specifications', 'product_id']);
     }
-    public function validator($data)
+    public function validate($data)
     {
         $rules = [
             "name" => "required",

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\ProductState;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -11,11 +12,21 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $database = new DatabaseController;
-        $products = $database->query($request, "products", ["id", "name", "slug", "description", "brand_id", "image"]);
+        $db = new DatabaseController();
+        $offset = $request->has("offset") ? $request->offset : 0;
+        $limit = $request->has("limit") ? $request->limit : 10;
+        $data = $db->searchRead(
+            'Product',
+            ($request->route()->getName() == "web.product.index") ? [["state", "=", ProductState::PUBLISHED], ["state", "=", ProductState::PUBLISHED]] : [],
+            ["id", "name", "description", "slug", "image", "brand_id"],
+            ["variants:id,name,specifications,standard_price,discount,product_id"],
+            $offset,
+            $limit
+        );
         return response()->json([
             "code" => 200,
-            "data" => $products
+            "message" => __('messages.get.success', ['name' => 'product']),
+            "data" => $data
         ], 200);
     }
 
@@ -40,6 +51,7 @@ class ProductController extends Controller
         $product->save();
         return response()->json([
             "code" => 200,
+            "messsage" => __("messages.crete.success"),
             "data" => $product
         ], 200);
     }
@@ -49,7 +61,7 @@ class ProductController extends Controller
         if (is_null($product)) {
             return response()->json([
                 "code" => 404,
-                "message" => "Product not found"
+                "message" => __("messages.model.notfound")
             ], 404);
         }
         $validator = $product->validate($request->all());
@@ -63,7 +75,7 @@ class ProductController extends Controller
         $product->id = $request->id ?? $product->id;
         $product->slug = $request->slug ?? Str::slug($product->name, "-");
         $product->description = $request->description ?? $product->description;
-        $product->brand_id = $request->brand_id ?? $product->brand_id;
+        $product->brand = $request->brand ?? $product->brand;
         $product->image = $request->image ?? $product->image;
         $product->save();
         return response()->json([

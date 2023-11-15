@@ -9,9 +9,9 @@ enum BrandState: int
     public static function toArray(): array
     {
         return [
-            self::DRAFT,
-            self::ACTIVE,
-            self::INACTIVE,
+            self::DRAFT->value,
+            self::ACTIVE->value,
+            self::INACTIVE->value,
         ];
     }
     public function label(): string

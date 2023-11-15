@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\ProductState;
+use App\Models\Brand;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,9 +19,8 @@ return new class extends Migration
             $table->string('slug')->nullable(false);
             $table->text('description')->nullable(true);
             $table->string('image')->nullable(true);
-            $table->unsignedBigInteger('brand_id')->nullable(false);
-            $table->foreign('brand_id')->references('id')->on('brands');
-            $table->integer('state')->nullable(false)->default(ProductState::DRAFT);
+            $table->foreignIdFor(Brand::class, 'brand_id')->references('id')->on('brands')->cascadeOnDelete();
+            $table->enum('state', ProductState::toArray())->nullable(false)->default(ProductState::DRAFT);
             $table->timestamps();
         });
     }

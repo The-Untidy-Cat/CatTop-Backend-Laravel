@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->string('username')->index()->unique()->nullable()->default(null);
             $table->string('password');
-            $table->integer('state')->nullable(false)->default(UserState::ACTIVE);
+            $table->enum('state', UserState::toArray())->nullable(false)->default(UserState::ACTIVE);
             $table->rememberToken();
             $table->timestamps();
         });

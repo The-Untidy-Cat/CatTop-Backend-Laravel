@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\ProductVariantState;
+use App\Models\Product;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,18 +16,16 @@ return new class extends Migration {
             $table->id();
             $table->string('SKU')->nullable(false)->unique();
             $table->string('name')->nullable(false);
-            $table->string('slug')->nullable(false);
             $table->text('image')->nullable(true);
             $table->text('description')->nullable(true);
-            $table->unsignedBigInteger('product_id')->nullable(false);
-            $table->foreign('product_id')->references('id')->on('products');
-            $table->unsignedBigInteger('standard_price')->nullable(false)->default(0);
-            $table->unsignedDouble('tax_rate')->nullable(false)->default(0);
-            $table->double('discount')->nullable(false)->default(0);
-            $table->double('extra_fee')->nullable(false)->default(0);
-            $table->unsignedBigInteger('cost_price')->nullable(false)->default(0);
-            $table->json('specifications')->nullable(false);
-            $table->integer('state')->nullable(false)->default(ProductVariantState::DRAFT);
+            $table->foreignIdFor(Product::class, 'product_id')->references('id')->on('products')->cascadeOnDelete();
+            $table->unsignedBigInteger('standard_price')->nullable(true)->default(0);
+            $table->unsignedDouble('tax_rate')->nullable(true)->default(0);
+            $table->double('discount')->nullable(true)->default(0);
+            $table->double('extra_fee')->nullable(true)->default(0);
+            $table->unsignedBigInteger('cost_price')->nullable(true)->default(0);
+            $table->json('specifications')->nullable(true);
+            $table->enum('state', ProductVariantState::toArray())->nullable(false)->default(ProductVariantState::DRAFT);
             $table->timestamps();
         });
     }

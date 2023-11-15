@@ -6,6 +6,7 @@ use App\Enums\BrandState;
 use App\Http\Controllers\Controller;
 
 use App\Models\Brand;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\DatabaseController as DB;
 
@@ -13,7 +14,6 @@ class BrandController extends Controller
 {
     public function index(Request $request)
     {
-
         if ($request->route()->getName() == "web.brands.index") {
             $request->merge([
                 "conditions" => [
@@ -28,8 +28,11 @@ class BrandController extends Controller
         }
         // echo $request->conditions;
         $db = new DB;
-        $data = $db->query($request, "brands", ["id", "name", "description", "image"], $request->conditions);
+        $data = $db->query($request, "brands", ["id", "name", "description", "image", "state"]);
         return response()->json(["data" => $data, "code" => 200], 200);
+        // $brands = Brand::all();
+
+        // return response()->json($brands->load(["products"]));
     }
     public function store()
     {

@@ -1,19 +1,19 @@
 <?php
 namespace App\Enums;
 
-enum UserState: int
+enum UserState: string
 {
-    case DRAFT = 0;
-    case ACTIVE = 1;
-    case INACTIVE = 2;
-    case BANNED = 3;
+    case DRAFT = 'draft';
+    case ACTIVE = 'active';
+    case INACTIVE = 'inactive';
+    case BANNED = 'banned';
     public static function toArray(): array
     {
         return [
-            self::DRAFT,
-            self::ACTIVE,
-            self::INACTIVE,
-            self::BANNED,
+            self::DRAFT->value,
+            self::ACTIVE->value,
+            self::INACTIVE->value,
+            self::BANNED->value,
         ];
     }
     public function label(): string

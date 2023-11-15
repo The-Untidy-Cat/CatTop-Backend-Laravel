@@ -35,6 +35,13 @@ return [
     'product.state.published' => 'Published',
     'product.state.archived' => 'Archived',
     'product.state.out_of_stock' => 'Out of stock',
+    'payment.method.cash' => "Cash",
+    'payment.method.banking' => "Banking",
+    "payment.state.unpaid" => "Unpaid",
+    "payment.state.partially_paid" => "Partially paid",
+    "payment.state.paid" => "Paid",
+    'shopping.method.online' => "Order at online website",
+    'shopping.method.offline' => "Order at the store",
     'product_variant.state.draft' => 'Draft',
     'product_variant.published' => 'Published',
     'product_variant.archived' => 'Archived',
@@ -46,4 +53,6 @@ return [
     'user.state.active' => 'Active',
     'user.state.inactive' => 'Inactive',
     'user.state.banned' => 'Banned',
+    'get.success' => 'Get :name successfully',
+    'create.success' => 'Create :name sucessfully'
 ];
