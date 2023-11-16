@@ -1,11 +1,11 @@
 <?php
 namespace App\Enums;
 
-enum BrandState: int
+enum BrandState: string
 {
-    case DRAFT = 0;
-    case ACTIVE = 1;
-    case INACTIVE = 2;
+    case DRAFT = 'draft';
+    case ACTIVE = 'active';
+    case INACTIVE = 'inactive';
     public static function toArray(): array
     {
         return [
