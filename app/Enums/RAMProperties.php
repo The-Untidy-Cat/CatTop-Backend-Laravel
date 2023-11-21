@@ -3,9 +3,9 @@ namespace App\Enums;
 
 enum RAMProperties: string
 {
-    case MEMORY = 'ram.capacity';
-    case TYPE = 'ram.type';
-    case FREQUENCY = 'ram.frequency';
+    case MEMORY = 'capacity';
+    case TYPE = 'type';
+    case FREQUENCY = 'frequency';
     public static function toArray(): array
     {
         return [

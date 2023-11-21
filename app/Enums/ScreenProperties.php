@@ -3,10 +3,10 @@ namespace App\Enums;
 
 enum ScreenProperties: string
 {
-    case SIZE = 'screen.size';
-    case RESOLUTION = 'screen.resolution';
-    case TECHNOLOGY = 'screen.technology';
-    case REFRESH_RATE = 'screeen.refresh_rate';
-    case TOUCH = 'screen.touch';
+    case SIZE = 'size';
+    case RESOLUTION = 'resolution';
+    case TECHNOLOGY = 'technology';
+    case REFRESH_RATE = 'refresh_rate';
+    case TOUCH = 'touch';
 
 }

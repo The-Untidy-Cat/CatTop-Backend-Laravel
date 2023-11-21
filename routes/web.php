@@ -1,9 +1,7 @@
 <?php
 
-use App\Enums\BrandState;
-use App\Http\Controllers\Api\BrandController as BrandController;
-use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\SpecsTypeController;
+use App\Http\Controllers\Web\BrandController;
+use App\Http\Controllers\Web\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,8 +24,9 @@ Route::prefix('brands')->group(function () {
 });
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index'])->name('web.product.index');
-    Route::get('/{id}', [ProductController::class, 'show'])->name('web.product.show');
+    Route::get('/{slug}', [ProductController::class, 'show'])->name('web.product.show');
 });
+Route::get('/search', [ProductController::class, 'search'])->name('web.product.search');
 // Route::prefix('specs-types')->group(function () {
 //     Route::get('/', [SpecsTypeController::class, 'index']);
 //     Route::get('/{id}', [SpecsTypeController::class, 'show']);

@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\SpecsTypeController;
-use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\BrandController;
-use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\SearchReadController;
+use App\Http\Controllers\Dashboard\BrandController;
+use App\Http\Controllers\Dashboard\CustomerController;
+use App\Http\Controllers\Dashboard\ProductController;
+use App\Http\Controllers\Dashboard\ProductVariantController;
+use App\Http\Controllers\Dashboard\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,34 +22,31 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:sanctum', 'auth.dash'])->group(
     function () {
         Route::get('/user', [UserController::class, 'getProfile']);
-        Route::post('/logout', [AuthController::class, 'logout']);
-        Route::group(['prefix' => '/brands'], function () {
+        Route::post('/search_read', [SearchReadController::class, 'index']);
+        Route::prefix('brands')->group(function () {
             Route::get('/', [BrandController::class, 'index']);
             Route::post('/', [BrandController::class, 'store']);
+            Route::get('/state', [BrandController::class, 'state']);
             Route::get('/{id}', [BrandController::class, 'show']);
             Route::put('/{id}', [BrandController::class, 'update']);
-            Route::delete('/{id}', [BrandController::class, 'destroy']);
         });
-        Route::group(['prefix' => '/specs-types'], function () {
-            Route::get('/', [SpecsTypeController::class, 'index']);
-            Route::post('/', [SpecsTypeController::class, 'store']);
-            Route::get('/{id}', [SpecsTypeController::class, 'show']);
-            Route::put('/{id}', [SpecsTypeController::class, 'update']);
-            Route::delete('/{id}', [SpecsTypeController::class, 'destroy']);
-        });
-        Route::group(['prefix' => '/products'], function () {
+        Route::prefix('products')->group(function () {
             Route::get('/', [ProductController::class, 'index']);
             Route::post('/', [ProductController::class, 'store']);
             Route::get('/{id}', [ProductController::class, 'show']);
             Route::put('/{id}', [ProductController::class, 'update']);
-            Route::delete('/{id}', [ProductController::class, 'destroy']);
+            Route::prefix('{product_id}/variants')->group(function () {
+                Route::get('/', [ProductVariantController::class, 'index']);
+                Route::post('/', [ProductVariantController::class, 'store']);
+                Route::get('/{variant_id}', [ProductVariantController::class, 'show']);
+                Route::put('/{variant_id}', [ProductVariantController::class, 'update']);
+            });
         });
-        Route::group(['prefix' => '/orders'], function () {
-            Route::get('/', [OrderController::class, 'index'])->name('dash.order.index');
-            Route::post('/', [OrderController::class, 'store'])->name('dash.order.store');
-            // Route::get('/{id}', [ProductController::class, 'show']);
-            // Route::put('/{id}', [ProductController::class, 'update']);
-            // Route::delete('/{id}', [ProductController::class, 'destroy']);
+        Route::prefix('customers')->group(function () {
+            Route::get('/', [CustomerController::class, 'index']);
+            Route::post('/', [CustomerController::class, 'store']);
+            Route::get('/{id}', [CustomerController::class, 'show']);
+            Route::put('/{id}', [CustomerController::class, 'update']);
         });
     }
 );

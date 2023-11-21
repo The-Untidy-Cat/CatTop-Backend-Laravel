@@ -17,24 +17,24 @@ class ProductObserver
     {
         $variant = new ProductVariant();
         $variant->product_id = $product->id;
-        // $variant->slug = Str::slug($product->name) . "-" . Str::random(6);
-        $variant->SKU = Str::slug($product->name);
+        $variant->SKU = Str::slug($product->name).'-'.Str::random(4);
         $variant->name = $product->name;
-        // $variant->price = $product->price;
         $variant->description = $product->description;
+        $variant->image = $product->image;
         $variant->state = ProductVariantState::DRAFT->value;
-        // $variant->specifications = [];
-        // foreach ($variant->specificatonsTemplate() as $specification) {
-        //     $variant->specifications += [$specification->value => ""];
-        // }
+        $variant->specifications = [];
+        foreach ($variant->specificatonsTemplate() as $specification => $value) {
+            if (gettype($value) == "array") {
+                $data = [];
+                foreach ($value as $item) {
+                    $data += $item;
+                }
+                $variant->specifications += [$specification => $data];
+            } else {
+                $variant->specifications += [$specification => ""];
+            }
+        }
         $variant->save();
-        // foreach ($variant->specificationsTemplate as $specification) {
-        //     $product_variant_specs = new ProductVariantSpecs();
-        //     $product_variant_specs->product_variant_id = $product->id;
-        //     $product_variant_specs->specs_type = $specification->value;
-        //     $product_variant_specs->value = "";
-        //     $product_variant_specs->save();
-        // }
     }
 
     /**

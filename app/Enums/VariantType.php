@@ -16,6 +16,7 @@ enum VariantType: string
     case WEIGHT = 'weight';
     case OS = 'os';
     case WARRANTY = 'warranty';
+    case COLOR = 'color';
 
     public function label(): string
     {
@@ -36,7 +37,8 @@ enum VariantType: string
             self::BATTERY => __('messages.specifications.battery'),
             self::WEIGHT => __('messages.specifications.battery'),
             self::OS => __('messages.specifications.os'),
-            self::WARRANTY => __('messages.specifications.warranty')
+            self::WARRANTY => __('messages.specifications.warranty'),
+            self::COLOR => __('messages.specifications.color')
         };
     }
 }

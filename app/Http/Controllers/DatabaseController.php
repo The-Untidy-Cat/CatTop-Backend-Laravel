@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DatabaseController extends Controller
 {
-    public function query(Request $request, $table, array $column)
+    public static function query(Request $request, $table, array $column)
     {
         $data = DB::table($table)->select($column);
         if ($request->has("search")) {
@@ -31,10 +29,38 @@ class DatabaseController extends Controller
         return ["limit" => $limit, "offset" => $offset, "length" => $length, "result" => $data];
     }
 
-    public function searchRead(string $model, array $conditions, array $attributes, array $with = [], int $offset = 0, int $limit = 20)
+    public static function searchRead(string $model, array $conditions, array $attributes, array $with = [], array $joins = [], array $count_column = ['*'], int $offset = 0, int $limit = 20)
     {
         $data = app("App\\Models\\$model");
         $whereOperator = "&&";
+        $joinSide = "left";
+        foreach ($joins as $join) {
+            if (gettype($join) == "string") {
+                switch ($join) {
+                    case "left":
+                        $joinSide = "left";
+                        break;
+                    case "right":
+                        $joinSide = "right";
+                        break;
+                    default:
+                        $joinSide = "inner";
+                        break;
+                }
+            } else {
+                switch ($joinSide) {
+                    case "left":
+                        $data = $data->leftJoin($join[0], $join[1], $join[2], $join[3]);
+                        break;
+                    case "right":
+                        $data = $data->rightJoin($join[0], $join[1], $join[2], $join[3]);
+                        break;
+                    default:
+                        $data = $data->join($join[0], $join[1], $join[2], $join[3]);
+                        break;
+                }
+            }
+        }
         foreach ($conditions as $condition) {
             if (gettype($condition) == "string") {
                 switch ($condition) {
@@ -58,19 +84,19 @@ class DatabaseController extends Controller
                 }
             }
         }
-
+        $data = $data->distinct();
         $offset = isset($offset) && $offset > 0 ? $offset : 0;
         $limit = isset($limit) && $limit > 0 ? $limit : 20;
         $records = $data->offset($offset)->limit($limit);
-        if (isset($with)){
+        if (isset($with)) {
             $records = $records->with($with);
         }
         $records = $records->get($attributes);
         return [
             "records" => $records,
-            "limit"=> $limit,
-            "offset"=> $offset,
-            "length"=> $data->count()
+            "limit" => $limit,
+            "offset" => $offset,
+            "length" => $data->count($count_column),
         ];
     }
 

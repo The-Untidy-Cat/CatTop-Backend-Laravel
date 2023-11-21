@@ -20,7 +20,6 @@ class ProductVariant extends Model
     protected $fillable = [
         'SKU',
         'name',
-        'slug',
         'image',
         'description',
         'product_id',
@@ -32,7 +31,7 @@ class ProductVariant extends Model
         'specifications',
     ];
 
-    protected $appends = ['sale_price', 'sold'];
+    protected $appends = ['sold'];
     protected $hidden = ['product_id'];
 
     protected $casts = [
@@ -47,35 +46,22 @@ class ProductVariant extends Model
 
     public function calculateSalePrice()
     {
-        return ($this->standard_price * (1 - $this->discount) + $this->extra_fee) * (1 + $this->tax_rate);
+        return round(($this->standard_price * (1 - $this->discount) + $this->extra_fee) * (1 + $this->tax_rate));
     }
 
-    public function getSalePriceAttribute()
+    public function getSoldAttribute()
     {
-        return $this->calculateSalePrice();
-    }
-
-    public function getSoldAttribute(){
         return $this->hasMany(OrderItem::class, 'variant_id', 'id')->sum('amount');
     }
     public function setSalePriceAttribute($value)
     {
         return $this->calculateSalePrice();
     }
-    // public function setDataAttribute($value)
+
+    // public function variantable()
     // {
-    //     $value = json_decode($value, true);
-
-    //     $value['key1'] = 'value1';
-    //     $value['key2'] = 'value2';
-
-    //     $this->attributes['data'] = json_encode($value);
+    //     return $this->morphTo();
     // }
-
-    public function variantable()
-    {
-        return $this->morphTo();
-    }
 
     public function product()
     {
@@ -84,23 +70,61 @@ class ProductVariant extends Model
 
     public function specificatonsTemplate(): array
     {
+        $cpu = [];
+        foreach (CPUProperties::cases() as $item) {
+            $cpu[] = [$item->value => ""];
+        }
+        $ram = [];
+        foreach (RAMProperties::cases() as $item) {
+            $ram[] = [$item->value => ""];
+        }
+        $storage = [];
+        foreach (StorageProperties::cases() as $item) {
+            $storage[] = [$item->value => ""];
+        }
+        $screen = [];
+        foreach (ScreenProperties::cases() as $item) {
+            $screen[] = [$item->value => ""];
+        }
+        $gpu = [];
+        foreach (GPUProperties::cases() as $item) {
+            $gpu[] = [$item->value => ""];
+        }
         return array_merge(
-            CPUProperties::cases(),
-            RAMProperties::cases(),
-            StorageProperties::cases(),
-            ScreenProperties::cases(),
-            GPUProperties::cases(),
+            [VariantType::PROCESSOR->value => $cpu],
+            [VariantType::RAM->value => $ram],
+            [VariantType::STORAGE->value => $storage],
+            [VariantType::SCREEN->value => $screen],
+            [VariantType::GPU->value => $gpu],
             [
-                VariantType::PORTS,
-                VariantType::KEYBOARD,
-                VariantType::TOUCHPAD,
-                VariantType::WEBCAM,
-                VariantType::BATTERY,
-                VariantType::WEIGHT,
-                VariantType::OS,
-                VariantType::WARRANTY
+                VariantType::PORTS->value => "",
+                VariantType::KEYBOARD->value => "",
+                VariantType::TOUCHPAD->value => "",
+                VariantType::WEBCAM->value => "",
+                VariantType::BATTERY->value => "",
+                VariantType::WEIGHT->value => "",
+                VariantType::OS->value => "",
+                VariantType::WARRANTY->value => "",
+                VariantType::COLOR->value => ""
             ],
         );
+        // // return array_merge(
+        // //     [VariantType::PROCESSOR->value => CPUProperties::toArray()],
+        // //     [VariantType::RAM => RAMProperties::cases()],
+        // //     [VariantType::STORAGE => StorageProperties::cases()],
+        // //     [VariantType::SCREEN => ScreenProperties::cases()],
+        // //     [VariantType::GPU => GPUProperties::cases()],
+        // //     [
+        // //         VariantType::PORTS,
+        // //         VariantType::KEYBOARD,
+        // //         VariantType::TOUCHPAD,
+        // //         VariantType::WEBCAM,
+        // //         VariantType::BATTERY,
+        // //         VariantType::WEIGHT,
+        // //         VariantType::OS,
+        // //         VariantType::WARRANTY
+        // //     ],
+        // // );
     }
 
     public function validate($data)
@@ -108,23 +132,45 @@ class ProductVariant extends Model
         $rules = [
             "name" => "required",
             "description" => "required",
-            "product_id" => "required",
+            "product_id" => "required|exists:products,id",
             "standard_price" => "required",
             "tax_rate" => "required",
             "discount" => "required",
             "extra_fee" => "required",
             "cost_price" => "required",
-            "specifications" => "json",
+            "specifications" => "required",
             "SKU" => "required|unique:product_variants,SKU",
             "image" => "required|url",
-            // "sepecifications.processors" => ["filled", "json"],
-            // "sepecifications.processors.name" => ["required_with:sepecifications.processors"],
-            // "sepecifications.processors.cores" => ["required_with:sepecifications.processors"],
-            // "sepecifications.processors.threads" => ["required_with:sepecifications.processors"],
-            // "sepecifications.processors.base_clock" => ["required_with:sepecifications.processors"],
-            // "sepecifications.processors.turbo_clock" => ["required_with:sepecifications.processors"],
-            // "sepecifications.processors.cache" => ["required_with:sepecifications.processors"],
-
+            "specifications.cpu.name" => ["required", "string"],
+            "specifications.cpu.cores" => ["required", "numeric"],
+            "specifications.cpu.threads" => ["required", "numeric"],
+            "specifications.cpu.base_clock" => ["required", "numeric"],
+            "specifications.cpu.turbo_clock" => ["required", "numeric"],
+            "specifications.cpu.cache" => ["required", "numeric"],
+            "specifications.ram.capacity" => ["required", "numeric"],
+            "specifications.ram.type" => ["required", "string"],
+            "specifications.ram.frequency" => ["required", "numeric"],
+            "specifications.storage.drive" => ["required", "string"],
+            "specifications.storage.capacity" => ["required", "numeric"],
+            "specifications.storage.type" => ["required", "string"],
+            "specifications.display.size" => ["required", "string"],
+            "specifications.display.resolution" => ["required", "string"],
+            "specifications.display.technology" => ["required", "string"],
+            "specifications.display.refresh_rate" => ["required", "numeric"],
+            "specifications.display.touch" => ["required", "boolean"],
+            "specifications.gpu.name" => ["required", "string"],
+            "specifications.gpu.memory" => ["required", "numeric"],
+            "specifications.gpu.type" => ["required", "string"],
+            "specifications.gpu.frequency" => ["required", "numeric"],
+            "specifications.ports" => ["required", "string"],
+            "specifications.keyboard" => ["required", "string"],
+            "specifications.touchpad" => ["required", "string"],
+            "specifications.webcam" => ["required", "string"],
+            "specifications.battery" => ["required", "numeric"],
+            "specifications.weight" => ["required", "numeric"],
+            "specifications.os" => ["required", "string"],
+            "specifications.warranty" => ["required", "numeric"],
+            "specifications.color" => ["required", "string"],
         ];
         return Validator::make($data, $rules);
     }

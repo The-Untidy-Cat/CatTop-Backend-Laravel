@@ -12,7 +12,9 @@ class OrderItem extends Model
         'order_id',
         'variant_id',
         'amount',
-        'is_refund'
+        'is_refund',
+        'rating',
+        'review',
     ];
 
     protected $attributes = [

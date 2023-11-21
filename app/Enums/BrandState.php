@@ -19,7 +19,7 @@ enum BrandState: string
         return static::getLabel($this);
     }
 
-    public static function getLabel(self $value): string
+    public   function getLabel(self $value): string
     {
         return match ($value) {
             self::DRAFT => __('messages.brand.state.draft'),

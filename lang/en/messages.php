@@ -3,6 +3,9 @@
 // lang/en/messages.php
 
 return [
+    'not_found' => 'Not found.',
+    'forbidden' => 'You are not allowed to access this resource.',
+    'auth.unauthenticated' => 'Unauthenticated.',
     'login.success' => 'Login successfully.',
     'login.failed' => 'Login failed.',
     'register.success' => 'Register successfully.',
@@ -53,6 +56,11 @@ return [
     'user.state.active' => 'Active',
     'user.state.inactive' => 'Inactive',
     'user.state.banned' => 'Banned',
+    'list.success' => 'Get :name successfully',
     'get.success' => 'Get :name successfully',
-    'create.success' => 'Create :name sucessfully'
+    'get.notfound' => 'Not found',
+    'create.success' => 'Create :name sucessfully',
+    'create.failed' => 'Create :name failed',
+    'update.success' => 'Update :name sucessfully',
+    'customer.created' => 'Customer created'
 ];

@@ -20,7 +20,7 @@ class AuthByCookie
         if ($request->cookie('auth_token') !== null) {
             $request->headers->set('Authorization', sprintf('%s %s', 'Bearer', $request->cookie('auth_token')));
         } else {
-            throw new AuthenticationException('No certification found');
+            throw new AuthenticationException(__('messages.auth.unauthenticated'));
         }
         return $next($request);
     }

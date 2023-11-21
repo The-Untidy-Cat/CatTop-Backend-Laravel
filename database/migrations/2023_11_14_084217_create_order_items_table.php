@@ -18,7 +18,9 @@ return new class extends Migration {
             $table->primary(['order_id', 'variant_id']);
             $table->unsignedInteger('amount')->nullable(false)->default(1);
             $table->unsignedBigInteger('unit_price')->nullable(false)->default(0);
-            $table->boolean('is_refund')->default(false);
+            $table->boolean('is_refunded')->default(false);
+            $table->enum('rating', [1, 2, 3, 4, 5])->nullable(true);
+            $table->text('review')->nullable(true)->default('');
             $table->text('serial_number')->nullable(true)->default('');
             $table->timestamps();
         });

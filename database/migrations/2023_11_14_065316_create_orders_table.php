@@ -4,6 +4,7 @@ use App\Enums\OrderState;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentState;
 use App\Enums\ShoppingMethod;
+use App\Models\AddressBook;
 use App\Models\Customer;
 use App\Models\Employee;
 use Illuminate\Database\Migrations\Migration;
@@ -24,7 +25,8 @@ return new class extends Migration {
             $table->enum('payment_method', PaymentMethod::toArray())->nullable(false)->default(PaymentMethod::CASH);
             $table->enum('payment_state', PaymentState::toArray())->nullable(false)->default(PaymentState::UNPAID);
             $table->enum('state', OrderState::toArray())->nullable(false)->default(OrderState::DRAFT);
-            $table->string('bill_of_landing_no')->nullable(true);
+            $table->string('tracking_no')->nullable(true);
+            $table->foreignIdFor(AddressBook::class, 'address_book_id')->nullable(true)->references('id')->on('address_books');
             $table->longText('note')->nullable(true);
             $table->timestamps();
         });

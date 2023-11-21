@@ -14,7 +14,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('order_histories', function (Blueprint $table) {
-            $table->id();
             $table->foreignIdFor(Order::class,'order_id')->references('id')->on("orders")->cascadeOnDelete();
             $table->enum('state', OrderState::toArray())->nullable(false)->default(OrderState::DRAFT);
             $table->timestamps();

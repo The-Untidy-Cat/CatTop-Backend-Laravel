@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Auth;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
@@ -43,13 +43,18 @@ class AuthController extends Controller
             'email' => $request->email,
         ]);
         $user->userRole()->create([
-            'role_id' => 3,
+            'role_id' => UserRole::CUSTOMER,
         ]);
         return response()->json([
             'code' => 200,
             'message' => __('messages.register.success'),
             'data' => [
-                'user' => $user,
+                'user' => $user->customer()->first([
+                    'first_name',
+                    'last_name',
+                    'phone_number',
+                    'email'
+                ]),
             ]
         ], 200);
     }
@@ -92,8 +97,15 @@ class AuthController extends Controller
                 'code' => 200,
                 'message' => __('messages.login.success'),
                 'data' => [
-                    'user' => Auth::user(),
-                    'token' => $token
+                    'user' => Auth::user()->employee()->first([
+                        "first_name",
+                        "last_name",
+                        "email",
+                        "phone_number",
+                        "date_of_birth",
+                        "gender"
+                    ]),
+                    // 'token' => $token
                 ]
             ], 200)->withCookie($cookie);
         } else {

@@ -18,11 +18,10 @@ class Customer extends Model
         'phone_number',
         'date_of_birth',
         'gender',
-        'status',
+        'state',
         'user_id',
         'email_verified_at',
         'email',
-        'user_id',
     ];
 
     public function user()
@@ -30,10 +29,24 @@ class Customer extends Model
         return $this->belongsTo(User::class, "user_id", "id");
     }
 
+    public function addressBooks()
+    {
+        return $this->hasMany(AddressBook::class, "customer_id", "id");
+    }
+
+    public function orders(){
+        return $this->hasMany(Order::class, "customer_id", "id");
+    }
+    public function getOrderCountAttribute(){
+        return $this->orders()->count();
+    }
     protected $casts = [
         'state' => CustomerState::class,
     ];
 
+    protected $appends = [
+        'order_count'
+    ];
     public function validate($data)
     {
         $phone_number_regex = "/^(0|84)(2(0[3-9]|1[0-6|8|9]|2[0-2|5-9]|3[2-9]|4[0-9]|5[1|2|4-9]|6[0-3|9]|7[0-7]|8[0-9]|9[0-4|6|7|9])|3[2-9]|5[5|6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])([0-9]{7})$/mg";

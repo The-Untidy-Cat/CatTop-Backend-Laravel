@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Observers\OrderObserve;
 use App\Observers\ProductObserver;
 use App\Observers\ProductVariantObserve;
 use Illuminate\Auth\Events\Registered;
@@ -31,6 +33,7 @@ class EventServiceProvider extends ServiceProvider
     {
         Product::observe(ProductObserver::class);
         ProductVariant::observe(ProductVariantObserve::class);
+        Order::observe(OrderObserve::class);
     }
 
     /**

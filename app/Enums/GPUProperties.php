@@ -3,10 +3,10 @@ namespace App\Enums;
 
 enum GPUProperties: string
 {
-    case NAME = 'gpu.name';
-    case MEMORY = 'gpu.memory';
-    case TYPE = 'gpu.type';
-    case FREQUENCY = 'gpu.frequency';
+    case NAME = 'name';
+    case MEMORY = 'memory';
+    case TYPE = 'type';
+    case FREQUENCY = 'frequency';
     public static function toArray(): array
     {
         return [

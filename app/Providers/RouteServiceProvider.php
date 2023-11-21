@@ -38,7 +38,7 @@ class RouteServiceProvider extends ServiceProvider
                         ->prefix('customer')
                         ->group(base_path('routes/customer.php'));
                     Route::middleware('dash')
-                        ->prefix('dash')
+                        ->prefix('dashboard')
                         ->group(base_path('routes/dash.php'));
                     Route::middleware('web')
                         ->prefix('web')

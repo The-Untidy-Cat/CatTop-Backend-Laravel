@@ -1,12 +1,12 @@
 <?php
 namespace App\Enums;
 
-enum EmployeeState: int
+enum EmployeeState: string
 {
-    case DRAFT = 0;
-    case ACTIVE = 1;
-    case INACTIVE = 2;
-    case BANNED = 3;
+    case DRAFT = 'draft';
+    case ACTIVE = 'active';
+    case INACTIVE = 'inactive';
+    case BANNED = 'banned';
     public static function toArray(): array
     {
         return [

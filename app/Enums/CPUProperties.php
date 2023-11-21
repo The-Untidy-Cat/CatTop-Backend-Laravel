@@ -3,12 +3,12 @@ namespace App\Enums;
 
 enum CPUProperties: string
 {
-    case NAME = 'cpu.name';
-    case CORES = 'cpu.cores';
-    case THREADS = 'cpu.threads';
-    case BASE_CLOCK = 'cpu.base_clock';
-    case TURBO_CLOCK = 'cpu.turbo_clock';
-    case CACHE = 'cpu.cache';
+    case NAME = 'name';
+    case CORES = 'cores';
+    case THREADS = 'threads';
+    case BASE_CLOCK = 'base_clock';
+    case TURBO_CLOCK = 'turbo_clock';
+    case CACHE = 'cache';
 
     public static function toArray(): array
     {

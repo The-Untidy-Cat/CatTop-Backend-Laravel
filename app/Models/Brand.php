@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class Brand extends Model
 {
@@ -21,20 +22,39 @@ class Brand extends Model
         'status',
         'parent_id'
     ];
+    protected $attributes = [
+        'state' => BrandState::ACTIVE,
+        'parent_id' => NULL,
+    ];
+    protected $casts = [
+        'state' => BrandState::class,
+    ];
+    protected $appends = ['product_count'];
+
+    public function getProductCountAttribute()
+    {
+        return $this->products()->count();
+    }
+
+    // public function getStateAttribute()
+    // {
+    //     return $this->state;
+    // }
 
     public function validate($data)
     {
         $rules = [
             "name" => "required",
             "slug" => "required",
-            "description" => "required",
+            "description" => "string",
             "image" => "required|url",
+            "state" => [Rule::enum(BrandState::class)]
         ];
         return Validator::make($data, $rules);
     }
     public function products(): HasMany
     {
-        return $this->hasMany(Product::class, "brand", "id");
+        return $this->hasMany(Product::class, "brand_id", "id");
     }
     // public function brandable(){
     //     return $this->morphTo();
@@ -45,13 +65,7 @@ class Brand extends Model
     }
     public function parent()
     {
-        return $this->belongsTo(Brand::class,'parent_id');
+        return $this->belongsTo(Brand::class, 'parent_id');
     }
-    protected $attributes = [
-        'state' => BrandState::ACTIVE,
-        'parent_id' => NULL,
-    ];
-    protected $casts = [
-        'state' => BrandState::class,
-    ];
 }
+

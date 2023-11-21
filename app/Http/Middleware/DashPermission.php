@@ -19,8 +19,8 @@ class DashPermission
         $role = $request->user()->userRole()->whereIn('role_id', [UserRole::ADMIN, UserRole::SELLER])->get();
         if ($role->isEmpty()) {
             return response()->json([
-                'code' =>  403,
-                'message' => 'Forbidden'
+                'code' => 403,
+                'message' => __('messages.forbidden')
             ], 403);
         }
         return $next($request);
