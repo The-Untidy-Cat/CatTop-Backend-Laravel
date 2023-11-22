@@ -13,8 +13,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('carts', function (Blueprint $table) {
+            $table->id();
             $table->foreignIdFor(Customer::class, 'customer_id')->references('id')->on('customers');
             $table->foreignIdFor(ProductVariant::class, 'variant_id')->references('id')->on('product_variants');
+            $table->unique(['customer_id','variant_id']);
             $table->unsignedInteger('amount')->nullable(false)->default(0);
             $table->timestamps();
         });

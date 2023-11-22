@@ -30,6 +30,10 @@ class Cart extends Model
     {
         return $this->belongsTo(ProductVariant::class, 'variant_id', 'id');
     }
+    public function product()
+    {
+        return $this->variant()->first()->product()->first();
+    }
 
     public function customer()
     {
@@ -38,6 +42,6 @@ class Cart extends Model
 
     public function getTotalAttribute()
     {
-        return $this->amount * $this->variant()->sale_price();
+        return $this->amount * $this->variant()->first()->sale_price;
     }
 }

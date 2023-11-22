@@ -39,7 +39,7 @@ class Order extends Model
 
     protected $appends = ['order_id', 'total'];
 
-    protected $with = ['customer:id,first_name,last_name', 'employee:id,first_name,last_name'];
+    // protected $with = ['customer:id,first_name,last_name', 'employee:id,first_name,last_name'];
 
     public function validate($data)
     {
@@ -71,11 +71,15 @@ class Order extends Model
 
     public function customer()
     {
-        return $this->hasOne(Customer::class, "customer_id", "id");
+        return $this->belongsTo(Customer::class, "customer_id", "id");
     }
 
     public function employee()
     {
-        return $this->hasOne(Employee::class, "employee_id", "id");
+        return $this->belongsTo(Employee::class, "employee_id", "id");
+    }
+    public function histories()
+    {
+        return $this->hasMany(OrderHistory::class, "order_id", "id");
     }
 }

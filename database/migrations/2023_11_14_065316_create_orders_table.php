@@ -26,7 +26,7 @@ return new class extends Migration {
             $table->enum('payment_state', PaymentState::toArray())->nullable(false)->default(PaymentState::UNPAID);
             $table->enum('state', OrderState::toArray())->nullable(false)->default(OrderState::DRAFT);
             $table->string('tracking_no')->nullable(true);
-            $table->foreignIdFor(AddressBook::class, 'address_book_id')->nullable(true)->references('id')->on('address_books');
+            $table->foreignIdFor(AddressBook::class, 'address_id')->nullable(true)->references('id')->on('address_books');
             $table->longText('note')->nullable(true);
             $table->timestamps();
         });

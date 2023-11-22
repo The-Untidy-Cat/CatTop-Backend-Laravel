@@ -136,7 +136,7 @@ class AuthController extends Controller
                 'password' => $request->password
             ])
         ) {
-            $role = Auth::user()->userRole()->whereIn('role_id', [3])->get();
+            $role = Auth::user()->userRole()->whereIn('role_id', [UserRole::CUSTOMER])->get();
 
             if ($role->isEmpty()) {
                 return response()->json([

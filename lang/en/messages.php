@@ -62,5 +62,6 @@ return [
     'create.success' => 'Create :name sucessfully',
     'create.failed' => 'Create :name failed',
     'update.success' => 'Update :name sucessfully',
-    'customer.created' => 'Customer created'
+    'customer.created' => 'Customer created',
+    'cart.updated' => 'Cart updated',
 ];

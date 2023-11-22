@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->unsignedInteger('ward');
             $table->unsignedInteger('district');
             $table->unsignedInteger('province');
-            $table->unique(['customer_id', 'name', 'phone', 'address_line', 'ward', 'district', 'province']);
+            $table->unique(['name', 'phone', 'address_line', 'ward', 'district', 'province'], 'unique_address_book');
             $table->timestamps();
         });
     }
