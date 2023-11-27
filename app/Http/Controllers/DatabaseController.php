@@ -29,7 +29,7 @@ class DatabaseController extends Controller
         return ["limit" => $limit, "offset" => $offset, "length" => $length, "result" => $data];
     }
 
-    public static function searchRead(string $model, array $conditions, array $attributes, array $with = [], array $joins = [], array $count_column = ['*'], int $offset = 0, int $limit = 20)
+    public static function searchRead(string $model, array $conditions, array $attributes, array $with = [], array $joins = [], array $count_column = ['*'], int $offset = 0, int $limit = 20, string $order_by = null, string $order = null)
     {
         $data = app("App\\Models\\$model");
         $whereOperator = "&&";
@@ -83,6 +83,10 @@ class DatabaseController extends Controller
                         break;
                 }
             }
+        }
+        if (isset($order_by)) {
+            $order = isset($order) ? $order : "asc";
+            $data = $data->orderBy($order_by, $order);
         }
         $data = $data->distinct();
         $offset = isset($offset) && $offset > 0 ? $offset : 0;

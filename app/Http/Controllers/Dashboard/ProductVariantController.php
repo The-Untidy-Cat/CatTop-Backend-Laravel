@@ -103,7 +103,8 @@ class ProductVariantController extends Controller
                 'extra_fee',
                 'cost_price',
                 'specifications',
-                'state'
+                'state',
+                'sale_price'
             ])
         ], 200);
     }

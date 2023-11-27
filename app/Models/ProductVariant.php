@@ -29,6 +29,8 @@ class ProductVariant extends Model
         'extra_fee',
         'cost_price',
         'specifications',
+        'state',
+        'sale_price',
     ];
 
     protected $appends = ['sold'];
@@ -52,10 +54,6 @@ class ProductVariant extends Model
     public function getSoldAttribute()
     {
         return $this->hasMany(OrderItem::class, 'variant_id', 'id')->sum('amount');
-    }
-    public function setSalePriceAttribute($value)
-    {
-        return $this->calculateSalePrice();
     }
 
     // public function variantable()

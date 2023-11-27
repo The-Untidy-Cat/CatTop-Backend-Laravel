@@ -26,10 +26,12 @@ class ProductController extends Controller
             $validate = Validator::make($request->all(), [
                 'offset' => 'integer|min:0',
                 'limit' => 'integer|min:0',
-                'brand' => 'array',
+                'brand' => 'string',
                 'name' => 'string',
                 'min_price' => 'integer|min:0',
                 'max_price' => 'integer|min:0',
+                'order_by' => 'string|in:sale_price,discount,created_at',
+                'order' => 'string|in:asc,desc',
             ]);
             if ($validate->fails()) {
                 return response()->json([
@@ -51,31 +53,62 @@ class ProductController extends Controller
                 $conditions[] = ['products.name', 'like', '%' . $request->name . '%'];
             }
             if (isset($request->brand)) {
+                $brands = explode(',', $request->brand);
                 $conditions[] = "&&";
-                foreach ($request->brand as $condition) {
+                foreach ($brands as $condition) {
                     $conditions[] = ['brands.name', '=', $condition];
                     $conditions[] = "||";
                 }
             }
+            // if (isset($request->order_by)) {
+            //     $conditions[] = "&&";
+            //     $conditions[] = ['product_variants.' . $request->order_by, $request->order ?? 'asc'];
+            // }
+
             // $products = DatabaseController::searchRead('Product', $conditions, ['id', 'name', 'slug', 'brand_id'], ['brand:id,name,image'], $request->offset ?? 0, $request->limit ?? 10);
             // $products = Product::join('brands', 'brands.id', '=', 'products.brand_id')
             //     ->join('product_variants', 'products.id', '=', 'product_variants.product_id')
             //     ->select(['products.id', 'products.name', 'products.slug'])
             //     ->where($conditions)
             //     ->distinct();
+            if (isset($request->order_by)) {
+                switch ($request->order_by) {
+                    case 'sale_price':
+                        $order_by = 'product_variants.sale_price';
+                        break;
+                    case 'discount':
+                        $order_by = 'product_variants.discount';
+                        break;
+                    case 'created_at':
+                        $order_by = 'products.created_at';
+                        break;
+                    default:
+                        $order_by = 'products.id';
+                        break;
+                }
+            } else {
+                $order_by = 'products.id';
+            }
 
             $products = DatabaseController::searchRead(
                 'Product',
                 $conditions,
-                ['products.id', 'products.name', 'products.slug'],
+                ['products.id', 'products.name', 'products.slug', 'products.image'],
                 [
-                    // 'variants' => function ($q) use ($request) {
-                    //     $q->select(['id', 'product_id', DB::raw("json_unquote(JSON_EXTRACT(specifications, '$.color')) as color")])->where([
-                    //         ['state', '=', ProductVariantState::PUBLISHED],
-                    //         ['sale_price', '<=', $request->max_price ?? 999999999],
-                    //         ['sale_price', '>=', $request->min_price ?? 0]
-                    //     ]);
-                    // },
+                    'variants' => function ($q) use ($request) {
+                        $q->select([
+                            'id',
+                            'product_id',
+                            DB::raw("json_unquote(JSON_EXTRACT(specifications, '$.color')) as color"),
+                            DB::raw("CONCAT(json_unquote(JSON_EXTRACT(specifications, '$.cpu.name')), ' ', json_unquote(JSON_EXTRACT(specifications, '$.cpu.base_clock')), 'GHz') as cpu"),
+                            DB::raw("CONCAT(json_unquote(JSON_EXTRACT(specifications, '$.ram.capacity')), 'GB ', json_unquote(JSON_EXTRACT(specifications, '$.ram.type'))) as ram"),
+                            DB::raw("CONCAT(json_unquote(JSON_EXTRACT(specifications, '$.storage.capacity')), 'GB ', json_unquote(JSON_EXTRACT(specifications, '$.storage.drive'))) as storage"),
+                            DB::raw("CONCAT(json_unquote(JSON_EXTRACT(specifications, '$.display.size')), ', ', json_unquote(JSON_EXTRACT(specifications, '$.display.resolution')),', ', json_unquote(JSON_EXTRACT(specifications, '$.display.technology')), ', ', json_unquote(JSON_EXTRACT(specifications, '$.display.touch'))) as display"),
+                            DB::raw("CONCAT(json_unquote(JSON_EXTRACT(specifications, '$.gpu.name')), ' ', json_unquote(JSON_EXTRACT(specifications, '$.gpu.type'))) as card"),
+                        ])->where([
+                                    ['state', '=', ProductVariantState::PUBLISHED],
+                                ]);
+                    },
                 ],
                 [
                     "left",
@@ -84,7 +117,9 @@ class ProductController extends Controller
                 ],
                 ['products.id'],
                 $request->offset ?? 0,
-                $request->limit ?? 10
+                $request->limit ?? 10,
+                $order_by ?? 'products.id',
+                $request->order ?? 'asc'
             );
 
             // if (isset($request->brand_id)) {

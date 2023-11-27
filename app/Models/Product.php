@@ -25,7 +25,7 @@ class Product extends Model
     //     'brand:id,name,image',
     //     // 'variants:name,id,image,sku,standard_price,sale_price,product_id,specifications'
     // ];
-    protected $appends = ['variant_count', 'discount', 'sale_price'];
+    protected $appends = ['variant_count', 'discount', 'sale_price', 'standard_price'];
     public function brand()
     {
         return $this->belongsTo(Brand::class, 'brand_id', 'id');
@@ -47,7 +47,7 @@ class Product extends Model
         return $minVariant;
     }
 
-    public function getStandatdPriceAttribute()
+    public function getStandardPriceAttribute()
     {
         return $this->variants()->min('standard_price');
     }

@@ -12,7 +12,7 @@ class BrandController extends Controller
 {
     public function index(Request $request)
     {
-        $brand = Brand::where('state', BrandState::ACTIVE)->get(['id', 'name', 'image']);
+        $brand = Brand::where('state', BrandState::ACTIVE)->get(['id', 'name', 'image', 'slug']);
         return response()->json([
             'code' => 200,
             'message' => __('messages.list.success', ['name' => 'brands']),
@@ -37,9 +37,9 @@ class BrandController extends Controller
             'message' => __('messages.list.success', ['name' => 'brand']),
             'data' => $brand->with([
                 'products' => function ($q) {
-                    $q->select(['id','name','slug', 'brand_id'])->where('state', ProductState::PUBLISHED);
+                    $q->select(['id', 'name', 'slug', 'brand_id'])->where('state', ProductState::PUBLISHED);
                 }
-            ])->first(['id', 'name', 'image', 'description'])
+            ])->first(['id', 'name', 'image', 'slug', 'description'])
         ], 200);
     }
 }

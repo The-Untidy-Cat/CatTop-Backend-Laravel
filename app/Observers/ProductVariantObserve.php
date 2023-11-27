@@ -8,7 +8,6 @@ class ProductVariantObserve
 {
     public function created(ProductVariant $variant): void
     {
-        echo 'update sale_price '.$variant->calculateSalePrice();
         $variant->sale_price = $variant->calculateSalePrice();
         $variant->save();
     }
