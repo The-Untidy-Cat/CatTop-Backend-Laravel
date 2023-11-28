@@ -93,7 +93,7 @@ class ProductController extends Controller
             $products = DatabaseController::searchRead(
                 'Product',
                 $conditions,
-                ['products.id', 'products.name', 'products.slug', 'products.image'],
+                ['products.id', 'products.name', 'products.slug', 'products.image', 'products.created_at'],
                 [
                     'variants' => function ($q) use ($request) {
                         $q->select([
