@@ -13,11 +13,14 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('order_items', function (Blueprint $table) {
-            $table->foreignIdFor(Order::class, 'order_id')->references('id')->on('orders')->nullable(false);
-            $table->foreignIdFor(ProductVariant::class, 'variant_id')->references('id')->on('product_variants')->nullable(false);
-            $table->primary(['order_id', 'variant_id']);
+            $table->id();
+            $table->foreignIdFor(Order::class, 'order_id')->references('id')->on('orders')->cascadeOnDelete()->nullable(false);
+            $table->foreignIdFor(ProductVariant::class, 'variant_id')->references('id')->on('product_variants')->cascadeOnDelete()->nullable(false);
+            $table->unique(['order_id', 'variant_id']);
             $table->unsignedInteger('amount')->nullable(false)->default(1);
-            $table->unsignedBigInteger('unit_price')->nullable(false)->default(0);
+            $table->unsignedBigInteger('standard_price')->nullable(false)->default(0);
+            $table->unsignedBigInteger('sale_price')->nullable(false)->default(0);
+            $table->unsignedBigInteger('total')->nullable(false)->default(0);
             $table->boolean('is_refunded')->default(false);
             $table->enum('rating', [1, 2, 3, 4, 5])->nullable(true);
             $table->text('review')->nullable(true)->default('');

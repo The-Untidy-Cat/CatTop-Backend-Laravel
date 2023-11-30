@@ -13,8 +13,8 @@ class CartController extends Controller
     {
         $cart = Cart::where([['customer_id', '=', $request->user()->customer()->first()->id]]);
         $cart = $cart->with([
-            'variant:id,name,product_id,sale_price,discount,standard_price,image',
-            'variant.product:id,name,slug,image',
+            'variant:id,name,product_id,sale_price,discount,standard_price,image,state',
+            'variant.product:id,name,slug,image,state',
         ])->get();
         return response()->json([
             'code' => 200,
@@ -50,8 +50,8 @@ class CartController extends Controller
         }
         $cart = Cart::where([['customer_id', '=', $request->user()->customer()->first()->id]]);
         $cart = $cart->with([
-            'variant:id,name,product_id,sale_price,discount,standard_price,image',
-            'variant.product:id,name,slug,image',
+            'variant:id,name,product_id,sale_price,discount,standard_price,image,state',
+            'variant.product:id,name,slug,image,state',
         ])->get();
         return response()->json([
             'code' => 200,
@@ -91,8 +91,8 @@ class CartController extends Controller
 
         $cart = Cart::where([['customer_id', '=', $request->user()->customer()->first()->id]]);
         $cart = $cart->with([
-            'variant:id,name,product_id,sale_price,discount,standard_price,image',
-            'variant.product:id,name,slug,image',
+            'variant:id,name,product_id,sale_price,discount,standard_price,image,state',
+            'variant.product:id,name,slug,image,state',
         ])->get();
         return response()->json([
             'code' => 200,

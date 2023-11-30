@@ -197,12 +197,13 @@ class ProductController extends Controller
                             "extra_fee",
                             "sale_price",
                             "specifications",
-                            "product_id"
+                            "product_id",
+                            "state",
                         ])
                             ->where('state', '=', ProductVariantState::PUBLISHED)->orWhere('state', '=', ProductVariantState::OUT_OF_STOCK);
                     }
                 ])
-                ->first(['id', 'name', 'slug', 'brand_id', 'description', 'image']);
+                ->first(['id', 'name', 'slug', 'brand_id', 'description', 'image', 'state']);
             return response()->json([
                 "code" => 200,
                 'data' => $product

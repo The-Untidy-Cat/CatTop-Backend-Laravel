@@ -5,6 +5,7 @@
 return [
     'not_found' => 'Not found :name.',
     'forbidden' => 'You are not allowed to access this resource.',
+    'unavailable' => 'This resource is unavailable.',
     'auth.unauthenticated' => 'Unauthenticated.',
     'login.success' => 'Login successfully.',
     'login.failed' => 'Login failed.',
@@ -64,4 +65,6 @@ return [
     'update.success' => 'Update :name sucessfully',
     'customer.created' => 'Customer created',
     'cart.updated' => 'Cart updated',
+    'cart.deleted' => 'Cart deleted',
+    'cart.empty' => 'Cart is empty',
 ];

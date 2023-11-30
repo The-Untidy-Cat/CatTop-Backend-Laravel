@@ -12,8 +12,8 @@ class ProductVariantController extends Controller
     {
         $variant = ProductVariant::where([['id', '=', $id]]);
         if ($variant) {
-            $variant = $variant->with('product:id,slug,name,image')
-                ->first(['id', 'name', 'sale_price', 'standard_price', 'discount', 'product_id', 'image']);
+            $variant = $variant->with('product:id,slug,name,image,state')
+                ->first(['id', 'name', 'sale_price', 'standard_price', 'discount', 'product_id', 'image', 'state']);
             return response()->json([
                 'code' => 200,
                 'message' => __('messages.success'),

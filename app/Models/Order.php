@@ -62,7 +62,7 @@ class Order extends Model
 
     public function getTotalAttribute()
     {
-        return $this->items->sum('total');
+        return $this->items()->sum('total');
     }
 
     public function items()

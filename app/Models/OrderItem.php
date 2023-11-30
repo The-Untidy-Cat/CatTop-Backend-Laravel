@@ -12,6 +12,9 @@ class OrderItem extends Model
         'order_id',
         'variant_id',
         'amount',
+        'standard_price',
+        'sale_price',
+        'total',
         'is_refund',
         'rating',
         'review',
@@ -21,20 +24,13 @@ class OrderItem extends Model
         // 'unit_price' => $this->variant->sale_price,
     ];
 
-    protected $appends = ['total'];
-
-    public function getTotalAttribute(){
-        return $this->amount*$this->unit_price;
-    }
-
-    public function setUnitPriceAttribute($value){
-        $this->attributes['unit_price'] = $this->variant->sale_price;
-    }
-    public function order(){
+    public function order()
+    {
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 
-    public function variant(){
-        return $this->belongsTo(ProductVariant::class,'variant_id', 'id');
+    public function variant()
+    {
+        return $this->belongsTo(ProductVariant::class, 'variant_id', 'id');
     }
 }

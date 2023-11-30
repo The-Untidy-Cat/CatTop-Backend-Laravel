@@ -7,7 +7,9 @@ use App\Enums\PaymentMethod;
 use App\Enums\ProductVariantState;
 use App\Enums\ShoppingMethod;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\ProductVariant;
+use App\Rules\ValidCartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -20,7 +22,7 @@ class OrderController extends Controller
             ->orders()->with([
                     'items:variant_id,amount',
                     'items.variant:id,name',
-                    'items.variant.product:id,name,slug,image',
+                    'items.variant.product:id,name,slug,image,state',
                 ])->get(['id', 'state', 'created_at']);
         return response()->json([
             'code' => 200,
@@ -33,7 +35,7 @@ class OrderController extends Controller
             ->orders()->with([
                     'items:variant_id,amount',
                     'items.variant:id,name',
-                    'items.variant.product:id,name,slug,image',
+                    'items.variant.product:id,name,slug,image,state',
                 ])->find($id);
         if (!$order) {
             return response()->json([
@@ -49,6 +51,7 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         try {
+            $failed = [];
             $validate = Validator::make($request->all(), [
                 'address_id' => 'required|exists:address_books,id',
                 'payment_method' => ['required', Rule::enum(PaymentMethod::class)],
@@ -71,7 +74,7 @@ class OrderController extends Controller
             }
             if (isset($request->items)) {
                 $validate = Validator::make($request->all(), [
-                    'items.*.variant_id' => ['required', 'exists:product_variants,id'],
+                    'items.*.variant_id' => ['required', new ValidCartItem()],
                     'items.*.amount' => ['required', 'integer', 'min:1', 'max:10'],
                 ]);
                 if ($validate->fails()) {
@@ -91,25 +94,14 @@ class OrderController extends Controller
                     'note' => $request->note
                 ]);
                 foreach ($request->items as $item) {
-                    $variant = ProductVariant::find($item['variant_id']);
-                    if (!$variant || $variant->state != ProductVariantState::PUBLISHED) {
-                        $order->delete();
-                        return response()->json([
-                            'code' => 404,
-                            'message' => __('messages.not_found', ['name' => 'variant'])
-                        ], 404);
-                    }
                     $order->items()->create([
                         'variant_id' => $item['variant_id'],
-                        'amount' => $item['amount']
+                        'amount' => $item['amount'],
+                        'standard_price' => ProductVariant::find($item['variant_id'])->standard_price,
+                        'sale_price' => ProductVariant::find($item['variant_id'])->sale_price,
+                        'total' =>  $item['amount'] * ProductVariant::find($item['variant_id'])->sale_price
                     ]);
-                    // echo $item['variant_id'] . " " . $item['amount'];
                 }
-                $order = $order->with([
-                    'items:variant_id,amount',
-                    'items.variant:id,name',
-                    'items.variant.product:id,name,slug,image',
-                ])->find($order->id);
             } else {
                 $cart = auth()->user()->customer()->first()->cart()->with([
                     'variant:id,name,product_id,sale_price',
@@ -130,30 +122,43 @@ class OrderController extends Controller
                     'address_id' => $request->address_id,
                     'note' => $request->note
                 ]);
+
                 foreach ($cart as $item) {
                     $variant = ProductVariant::find($item->variant_id);
                     if (!$variant || $variant->state != ProductVariantState::PUBLISHED) {
-                        $order->delete();
-                        return response()->json([
-                            'code' => 404,
-                            'message' => __('messages.not_found', ['name' => 'variant'])
-                        ], 404);
+                        $failed[] = $item->variant_id;
+                        continue;
                     }
                     $order->items()->create([
                         'variant_id' => $item->variant_id,
-                        'amount' => $item->amount
+                        'amount' => $item->amount,
+                        'standard_price' => $variant->standard_price,
+                        'sale_price' => $variant->sale_price,
+                        'total' => $item->amount * $variant->sale_price
                     ]);
                 }
                 $cart->each->delete();
-                $order = $order->with([
-                    'items:variant_id,amount',
-                    'items.variant:id,name',
-                    'items.variant.product:id,name,slug,image',
-                ])->find($order->id);
+
             }
             return response()->json([
                 'code' => 200,
-                'data' => ['order' => $order]
+                'data' => [
+                    'detail' => $order->with([
+                        'items:id,variant_id,amount,order_id,total,sale_price,standard_price',
+                        'items.variant:id,name,product_id',
+                        'items.variant.product:id,name,slug,image,state',
+                    ])->get([
+                                "shopping_method",
+                                "payment_method",
+                                "payment_state",
+                                "state",
+                                "tracking_no",
+                                "address_id",
+                                "note",
+                                "id"
+                            ]),
+                    'failed' => $failed
+                ]
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
