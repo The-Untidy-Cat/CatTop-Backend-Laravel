@@ -26,10 +26,11 @@ Route::middleware(['auth:sanctum', CustomerPermission::class])->group(
             Route::post('/', [AddressBookController::class, 'store']);
             Route::put('/{id}', [AddressBookController::class, 'update']);
         });
-        Route::group(['prefix'=> 'cart'], function(){
+        Route::group(['prefix'=> '/cart'], function(){
             Route::get('/', [CartController::class, 'show']);
             Route::post('/', [CartController::class, 'store']);
             Route::put('/{id}', [CartController::class, 'update']);
+            Route::delete('/', [CartController::class, 'clear']);
         });
     }
 );

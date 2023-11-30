@@ -3,7 +3,7 @@
 // lang/en/messages.php
 
 return [
-    'not_found' => 'Not found.',
+    'not_found' => 'Not found :name.',
     'forbidden' => 'You are not allowed to access this resource.',
     'auth.unauthenticated' => 'Unauthenticated.',
     'login.success' => 'Login successfully.',

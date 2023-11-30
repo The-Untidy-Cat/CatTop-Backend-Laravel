@@ -33,7 +33,16 @@ class AddressBookController extends Controller
     public function store(Request $request)
     {
         $addressBook = new AddressBook();
-        $validate = $addressBook->validate($request->all());
+        $addressBook->customer_id = auth()->user()->customer()->first()->id;
+        $validate = $addressBook->validate([
+            'customer_id' => $addressBook->customer_id,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'address_line' => $request->address_line,
+            'ward' => $request->ward,
+            'district' => $request->district,
+            'province' => $request->province
+        ]);
         if ($validate->fails()) {
             return response()->json([
                 'code' => 400,

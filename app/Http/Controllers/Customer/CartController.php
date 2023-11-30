@@ -91,12 +91,21 @@ class CartController extends Controller
 
         $cart = Cart::where([['customer_id', '=', $request->user()->customer()->first()->id]])
             ->with([
-                    'variant:id,name,product_id,sale_price',
-                    'variant.product:id,name,slug',
-                ])->get(['id', 'amount', 'variant_id']);
+                'variant:id,name,product_id,sale_price',
+                'variant.product:id,name,slug',
+            ])->get(['id', 'amount', 'variant_id']);
         return response()->json([
             'code' => 200,
             'data' => ['cart' => $cart]
+        ], 200);
+    }
+    public function clear(Request $request)
+    {
+        $cart = Cart::where([['customer_id', '=', $request->user()->customer()->first()->id]]);
+        $cart->delete();
+        return response()->json([
+            'code' => 200,
+            'message' => __('message.delete.success')
         ], 200);
     }
 }

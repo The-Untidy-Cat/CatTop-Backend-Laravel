@@ -28,16 +28,20 @@ class Customer extends Model
     {
         return $this->belongsTo(User::class, "user_id", "id");
     }
-
     public function addressBooks()
     {
         return $this->hasMany(AddressBook::class, "customer_id", "id");
     }
-
-    public function orders(){
+    public function cart()
+    {
+        return $this->hasMany(Cart::class, "customer_id", "id");
+    }
+    public function orders()
+    {
         return $this->hasMany(Order::class, "customer_id", "id");
     }
-    public function getOrderCountAttribute(){
+    public function getOrderCountAttribute()
+    {
         return $this->orders()->count();
     }
     protected $casts = [

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Rules\PhoneNumber;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
@@ -32,7 +33,7 @@ class AddressBook extends Model
         $rules = [
             'customer_id' => ['required', 'exists:customers,id'],
             'name' => ['required', 'string'],
-            'phone' => ['required', 'string'],
+            'phone' => ['required', new PhoneNumber],
             'address_line' => ['required', 'string'],
             'ward' => ['required', 'integer'],
             'district' => ['required', 'integer'],

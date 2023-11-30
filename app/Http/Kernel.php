@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Controllers\Api\XSRFController;
 use App\Http\Middleware\AuthByCookie;
+use App\Http\Middleware\Cors;
 use App\Http\Middleware\DashPermission;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Session\Middleware\StartSession;
@@ -22,6 +23,7 @@ class Kernel extends HttpKernel
             // \App\Http\Middleware\TrustHosts::class,
         \App\Http\Middleware\TrustProxies::class,
         \Illuminate\Http\Middleware\HandleCors::class,
+        Cors::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,

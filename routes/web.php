@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\BrandController;
 use App\Http\Controllers\Web\ProductController;
+use App\Http\Controllers\Web\ProductVariantController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,6 +26,9 @@ Route::prefix('brands')->group(function () {
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index'])->name('web.product.index');
     Route::get('/{slug}', [ProductController::class, 'show'])->name('web.product.show');
+});
+Route::prefix('variants')->group(function () {
+    Route::get('/{id}', [ProductVariantController::class, 'show'])->name('web.variant.show');
 });
 Route::get('/search', [ProductController::class, 'search'])->name('web.product.search');
 // Route::prefix('specs-types')->group(function () {

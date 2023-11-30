@@ -189,6 +189,7 @@ class ProductController extends Controller
                             'id',
                             'name',
                             'image',
+                            "sku",
                             'description',
                             "standard_price",
                             "tax_rate",
