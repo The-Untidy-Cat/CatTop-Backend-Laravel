@@ -91,7 +91,7 @@ class AuthController extends Controller
             }
             $token = Auth::user()->createToken('authToken')->plainTextToken;
 
-            $cookie = cookie('auth_token', $token, 60 * 24 * 30, null, null, null, true, false, 'None'); // set the cookie for 7 days
+            $cookie = cookie('auth_token', $token, 60 * 24 * 30, null, null, null, true, false); // set the cookie for 7 days
 
             return response()->json([
                 'code' => 200,
@@ -146,7 +146,7 @@ class AuthController extends Controller
             }
             $token = Auth::user()->createToken('authToken')->plainTextToken;
 
-            $cookie = cookie('auth_token', $token, 60 * 24 * 30, null, null, null, true, false, 'None'); // set the cookie for 7 days
+            $cookie = cookie('auth_token', $token, 60 * 24 * 30, null, null, null, true, false); // set the cookie for 7 days
 
             return response()->json([
                 'code' => 200,

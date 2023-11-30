@@ -13,8 +13,8 @@ class CartController extends Controller
     {
         $cart = Cart::where([['customer_id', '=', $request->user()->customer()->first()->id]]);
         $cart = $cart->with([
-            'variant:id,name,product_id,sale_price',
-            'variant.product:id,name,slug',
+            'variant:id,name,product_id,sale_price,discount,standard_price,image',
+            'variant.product:id,name,slug,image',
         ])->get();
         return response()->json([
             'code' => 200,
@@ -48,11 +48,11 @@ class CartController extends Controller
                 'amount' => $request->amount
             ]);
         }
-        $cart = Cart::where([['customer_id', '=', $request->user()->customer()->first()->id]])
-            ->with([
-                'variant:id,name,product_id,sale_price',
-                'variant.product:id,name,slug',
-            ])->get(['id', 'amount', 'variant_id']);
+        $cart = Cart::where([['customer_id', '=', $request->user()->customer()->first()->id]]);
+        $cart = $cart->with([
+            'variant:id,name,product_id,sale_price,discount,standard_price,image',
+            'variant.product:id,name,slug,image',
+        ])->get();
         return response()->json([
             'code' => 200,
             'data' => ['cart' => $cart]
@@ -89,11 +89,11 @@ class CartController extends Controller
             $cart->save();
         }
 
-        $cart = Cart::where([['customer_id', '=', $request->user()->customer()->first()->id]])
-            ->with([
-                'variant:id,name,product_id,sale_price',
-                'variant.product:id,name,slug',
-            ])->get(['id', 'amount', 'variant_id']);
+        $cart = Cart::where([['customer_id', '=', $request->user()->customer()->first()->id]]);
+        $cart = $cart->with([
+            'variant:id,name,product_id,sale_price,discount,standard_price,image',
+            'variant.product:id,name,slug,image',
+        ])->get();
         return response()->json([
             'code' => 200,
             'data' => ['cart' => $cart]

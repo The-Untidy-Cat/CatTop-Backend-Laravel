@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Rules\PhoneNumber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -12,12 +13,18 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $customer = $request->user()->customer()->first()->only(['id', 'first_name', 'last_name', 'email', 'phone_number']);
+        $cart = Cart::where([['customer_id', '=', $request->user()->customer()->first()->id]]);
+        $cart = $cart->with([
+            'variant:id,name,product_id,sale_price,discount,standard_price,image',
+            'variant.product:id,name,slug,image',
+        ])->get();
         return response()->json([
-            'status' => true,
+            'code' => 200,
             'message' => 'User profile',
             'data' =>
                 [
-                    "user" => $customer
+                    "user" => $customer,
+                    'cart' => $cart
                 ]
         ]);
     }
