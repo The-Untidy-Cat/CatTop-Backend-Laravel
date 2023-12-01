@@ -66,6 +66,11 @@ class ProductVariant extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(OrderItem::class, 'variant_id', 'id');
+    }
+
     public function specificatonsTemplate(): array
     {
         $cpu = [];

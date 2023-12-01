@@ -21,7 +21,7 @@ class AddressBook extends Model
         'province'
     ];
 
-    protected $hidden = ['id', 'customer_id'];
+    protected $hidden = ['customer_id'];
 
     public function customer()
     {

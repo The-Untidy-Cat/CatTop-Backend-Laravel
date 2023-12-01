@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\SearchReadController;
 use App\Http\Controllers\Dashboard\BrandController;
 use App\Http\Controllers\Dashboard\CustomerController;
+use App\Http\Controllers\Dashboard\OrderController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProductVariantController;
 use App\Http\Controllers\Dashboard\UserController;
@@ -47,6 +48,10 @@ Route::middleware(['auth:sanctum', 'auth.dash'])->group(
             Route::post('/', [CustomerController::class, 'store']);
             Route::get('/{id}', [CustomerController::class, 'show']);
             Route::put('/{id}', [CustomerController::class, 'update']);
+        });
+        Route::prefix('orders')->group(function (){
+            Route::get('/', [OrderController::class, 'index']);
+            Route::post('/', [OrderController::class, 'create']);
         });
     }
 );

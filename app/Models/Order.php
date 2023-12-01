@@ -7,6 +7,7 @@ use App\Enums\PaymentMethod;
 use App\Enums\PaymentState;
 use App\Enums\ShoppingMethod;
 use App\Models\OrderItem;
+use App\Rules\ValidCartItem;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
@@ -51,7 +52,10 @@ class Order extends Model
             'payment_method' => ['required', Rule::enum(PaymentMethod::class)],
             'payment_state' => ['required', Rule::enum(PaymentState::class)],
             'state' => ['required', Rule::enum(OrderState::class)],
-            'note' => ['string']
+            'note' => ['string'],
+            'items' => ['required', 'array'],
+            'items.*.variant_id' => ['required', new ValidCartItem],
+            'items.*.amount' => ['required', 'integer', 'min:1'],
         ];
         return Validator::make($data, $rules);
     }

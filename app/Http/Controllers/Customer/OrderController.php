@@ -101,6 +101,15 @@ class OrderController extends Controller
                         'sale_price' => ProductVariant::find($item['variant_id'])->sale_price,
                         'total' =>  $item['amount'] * ProductVariant::find($item['variant_id'])->sale_price
                     ]);
+                    // $cart_item = auth()->user()->customer()->first()->cart()->where('variant_id', $item['variant_id'])->first();
+                    // if ($cart_item) {
+                    //     if ($cart_item->amount > $item['amount']) {
+                    //         $cart_item->amount -= $item['amount'];
+                    //         $cart_item->save();
+                    //     } else {
+                    //         $cart_item->delete();
+                    //     }
+                    // }
                 }
             } else {
                 $cart = auth()->user()->customer()->first()->cart()->with([
