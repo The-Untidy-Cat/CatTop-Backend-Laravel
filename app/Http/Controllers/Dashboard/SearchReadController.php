@@ -1,21 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\DatabaseController;
 use App\Rules\ExistedDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class SearchReadController extends Controller
 {
     public function index(Request $request)
     {
-        $db = new DatabaseController();
         $validate = Validator::make($request->all(), [
-            "model" => ["required", "string", new ExistedDatabase],
-            // ""
+            "model" => ["required", "string", new ExistedDatabase()],
+            "domain" => ["array"],
+            "fields" => ["required", "array"],
+            "offset" => ["integer", "min:0"],
+            "limit" => ["integer", "min:1"],
         ]);
         if ($validate->fails()) {
             return response()->json([
@@ -25,7 +27,22 @@ class SearchReadController extends Controller
             ], 400);
         }
 
-        // $db->searchRead();
-        return response()->json([], 200);
+        $result = DatabaseController::searchRead(
+            $request->model,
+            $request->domain ?? [],
+            $request->fields ?? [],
+            [],
+            [],
+            ['*'],
+            $request->offset ?? 0,
+            $request->limit ?? 10,
+            $request->order_by ?? null,
+            $request->order ?? null
+        );
+        return response()->json([
+            "code" => 200,
+            "message" => __('messages.list.success', ['name' => $request->model]),
+            "data" => $result
+        ], 200);
     }
 }

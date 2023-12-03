@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\SearchReadController;
+use App\Http\Controllers\Dashboard\SearchReadController;
 use App\Http\Controllers\Dashboard\BrandController;
 use App\Http\Controllers\Dashboard\CustomerController;
 use App\Http\Controllers\Dashboard\OrderController;

@@ -13,7 +13,7 @@ class UserController extends Controller
         return response()->json([
             'code' => 200,
             'message' => __('messages.get.success', ['name' => 'profile']),
-            'data' => $request->user()->employee()->first(['first_name', 'last_name', 'email', 'phone_number', 'state'])
+            'data' => ['user' => $request->user()->employee()->first(['first_name', 'last_name', 'email', 'phone_number', 'state'])]
             // ->only(['id', 'first_name', 'last_name', 'email', 'phone_number', 'state'])
         ], 200);
     }

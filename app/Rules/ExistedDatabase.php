@@ -16,7 +16,7 @@ class ExistedDatabase implements ValidationRule
     {
         try {
             $model = app("App\\Models\\$value");
-            $model = $model->findOrfail();
+            $model = $model->firstOrFail();
         } catch (\Exception $e) {
             $fail($e->getMessage());
         }

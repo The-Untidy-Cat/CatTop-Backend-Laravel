@@ -31,7 +31,8 @@ class DatabaseController extends Controller
 
     public static function searchRead(string $model, array $conditions, array $attributes, array $with = [], array $joins = [], array $count_column = ['*'], int $offset = 0, int $limit = 20, string $order_by = null, string $order = null)
     {
-        $data = app("App\\Models\\$model");
+        $model = app("App\\Models\\$model");
+        $data = $model;
         $whereOperator = "&&";
         $joinSide = "left";
         foreach ($joins as $join) {
@@ -100,7 +101,7 @@ class DatabaseController extends Controller
             "records" => $records,
             "limit" => $limit,
             "offset" => $offset,
-            "length" => $data->count($count_column),
+            "length" => $model::count()
         ];
     }
 
