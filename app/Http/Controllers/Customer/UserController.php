@@ -62,7 +62,7 @@ class UserController extends Controller
             'message' => __('messages.update.success', ['name' => 'Password']),
             'data' =>
                 [
-                    "user" => $customer
+                    "user" => [...$customer, "username" => $request->user()->username]
                 ]
         ]);
     }
