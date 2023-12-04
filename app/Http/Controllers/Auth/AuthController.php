@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\User;
 use App\Rules\PhoneNumber;
 use App\Rules\Username;
@@ -147,19 +148,27 @@ class AuthController extends Controller
             $token = Auth::user()->createToken('authToken')->plainTextToken;
 
             $cookie = cookie('auth_token', $token, 60 * 24 * 30, null, null, null, true, false); // set the cookie for 7 days
-
+            $cart = Cart::where([['customer_id', '=', $request->user()->customer()->first()->id]]);
+            $cart = $cart->with([
+                'variant:id,name,product_id,sale_price,discount,standard_price,image,state',
+                'variant.product:id,name,slug,image,state',
+            ])->get();
             return response()->json([
                 'code' => 200,
                 'message' => 'Login success',
                 'data' => [
-                    'user' => Auth::user()->customer()->first()->only([
-                        "first_name",
-                        "last_name",
-                        "email",
-                        "phone_number",
-                        "date_of_birth",
-                        "gender"
-                    ]),
+                    'user' => [
+                        ...Auth::user()->customer()->first()->only([
+                            "first_name",
+                            "last_name",
+                            "email",
+                            "phone_number",
+                            "date_of_birth",
+                            "gender"
+                        ]),
+                        "username" => $request->user()->username
+                    ],
+                    'cart' => $cart
                 ]
             ], 200)->withCookie($cookie);
         } else {

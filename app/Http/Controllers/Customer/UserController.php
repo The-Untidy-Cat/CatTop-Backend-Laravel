@@ -23,7 +23,7 @@ class UserController extends Controller
             'message' => 'User profile',
             'data' =>
                 [
-                    "user" => $customer,
+                    "user" => [...$customer, "username" => $request->user()->username],
                     'cart' => $cart
                 ]
         ]);
