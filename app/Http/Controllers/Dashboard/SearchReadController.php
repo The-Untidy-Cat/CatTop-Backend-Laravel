@@ -18,6 +18,10 @@ class SearchReadController extends Controller
             "fields" => ["required", "array"],
             "offset" => ["integer", "min:0"],
             "limit" => ["integer", "min:1"],
+            "with" => ["array"],
+            "joins" => ["array"],
+            "order_by" => ["string"],
+            "order" => ["string", "in:asc,desc"],
         ]);
         if ($validate->fails()) {
             return response()->json([
