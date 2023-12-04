@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\DatabaseController;
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class BrandController extends Controller
 {
@@ -54,6 +55,7 @@ class BrandController extends Controller
                 'errors' => $validate->errors()
             ], 400);
         }
+        $request->slug = Str::slug($request->name);
         $brand->fill($request->all());
         $brand->state = BrandState::ACTIVE;
         $brand->save();

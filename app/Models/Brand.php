@@ -44,8 +44,7 @@ class Brand extends Model
     public function validate($data)
     {
         $rules = [
-            "name" => "required",
-            "slug" => "required",
+            "name" => "required|string",
             "description" => "string",
             "image" => "required|url",
             "state" => [Rule::enum(BrandState::class)]

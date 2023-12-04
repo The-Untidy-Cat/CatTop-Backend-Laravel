@@ -29,16 +29,6 @@ return new class extends Migration {
             $table->foreignIdFor(User::class, 'user_id')->references('id')->on('users')->nullable(true)->default(null);
             $table->timestamps();
         });
-        DB::table('employees')->insert([
-            [
-                'first_name' => 'Admin',
-                'last_name' => '',
-                'display_name' => 'admin',
-                'email' => 'admin@cattop.theuntidycat.tech',
-                'phone_number' => '0999999999',
-                'user_id' => 1
-            ],
-        ]);
     }
 
     /**

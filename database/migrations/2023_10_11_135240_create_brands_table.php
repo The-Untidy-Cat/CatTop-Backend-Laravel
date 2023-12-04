@@ -14,7 +14,7 @@ return new class extends Migration {
         Schema::create('brands', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable(false);
-            $table->string('slug')->nullable(false);
+            $table->string('slug')->nullable(true);
             $table->text('description')->nullable(true);
             $table->string('image')->nullable(true);
             $table->enum('state', BrandState::toArray())->nullable(false)->default(BrandState::ACTIVE);

@@ -18,13 +18,6 @@ return new class extends Migration {
             $table->primary(['user_id', 'role_id']);
             $table->timestamps();
         });
-
-        DB::table('user_roles')->insert(
-            [
-                'user_id' => User::where('username', 'admin')->first()->id,
-                'role_id' => UserRole::ADMIN,
-            ]
-        );
     }
 
     /**
