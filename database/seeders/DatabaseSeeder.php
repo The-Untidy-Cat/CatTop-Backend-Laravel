@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         $user = new User();
         $user->username = 'theuntidycat';
-        $user->password = bcrypt('theuntidycat');
+        $user->password = password_hash(str('theuntidycat')->toString(), PASSWORD_DEFAULT);
         $user->save();
         $user->userRole()->create([
             'role_id' => UserRole::ADMIN

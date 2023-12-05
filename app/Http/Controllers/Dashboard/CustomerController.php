@@ -48,9 +48,7 @@ class CustomerController extends Controller
         $password = md5(rand());
         $customer->user()->create([
             'username' => $request->phone_number,
-            'password' => bcrypt(
-                $password
-            ),
+            'password' => password_hash(str($password)->toString(), PASSWORD_DEFAULT)
         ]);
         Mail::to($request->email)->send(new CustomerCreated($request->phone_number, $password));
     }

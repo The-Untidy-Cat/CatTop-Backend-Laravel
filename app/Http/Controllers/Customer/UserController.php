@@ -31,7 +31,7 @@ class UserController extends Controller
     public function changePassword(Request $request)
     {
         $customer = $request->user();
-        $validate = Validator::make(['new_password' => $request->new_password], [
+        $validate = Validator::make($request->all(), [
             'new_password' => ['required', 'string', 'min:8'],
             'old_password' => ['required']
         ]);
@@ -46,7 +46,7 @@ class UserController extends Controller
             ], 400);
         }
         if (
-            bcrypt(str($request->old_password)->toString()) != $customer->password
+            password_hash(str($request->old_password)->toString(), PASSWORD_DEFAULT) != $customer->password
         ) {
             return response()->json([
                 'code' => 400,
@@ -58,7 +58,7 @@ class UserController extends Controller
                 ]
             ], 400);
         }
-        if (bcrypt(str($request->new_password)->toString()) == $customer->password) {
+        if (password_hash(str($request->new_password)->toString(), PASSWORD_DEFAULT) == $customer->password) {
             return response()->json([
                 'code' => 400,
                 'message' => __('messages.validation.error'),
@@ -69,7 +69,7 @@ class UserController extends Controller
                 ]
             ], 400);
         }
-        $customer->password = bcrypt(str($request->new_password)->toString());
+        $customer->password = password_hash(str($request->new_password)->toString(), PASSWORD_DEFAULT);
         $customer->save();
         return response()->json([
             'status' => true,

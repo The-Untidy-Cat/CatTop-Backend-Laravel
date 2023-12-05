@@ -45,7 +45,7 @@ class ResetPasswordController extends Controller
 
             if ($user) {
                 $user->update([
-                    'password' => bcrypt(str($request->password)->toString())
+                    'password' => password_hash(str($request->password)->toString(), PASSWORD_DEFAULT)
                 ]);
                 DB::table('password_reset_tokens')->where([
                     ['email', $request->all()['email']],
