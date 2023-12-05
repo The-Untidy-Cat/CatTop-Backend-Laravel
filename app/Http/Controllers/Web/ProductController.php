@@ -48,11 +48,6 @@ class ProductController extends Controller
                 ['product_variants.sale_price', '<=', $request->max_price ?? 999999999],
                 ['product_variants.sale_price', '>=', $request->min_price ?? 0]
             ];
-
-            if (isset($request->name)) {
-                $conditions[] = "&&";
-                $conditions[] = ['products.name', 'like', '%' . $request->name . '%'];
-            }
             if (isset($request->brand)) {
                 $brands = explode(',', $request->brand);
                 $conditions[] = "&&";
@@ -61,6 +56,11 @@ class ProductController extends Controller
                     $conditions[] = "||";
                 }
             }
+            if (isset($request->name)) {
+                $conditions[] = "&&";
+                $conditions[] = ['products.name', 'like', '%' . $request->name . '%'];
+            }
+
             if (isset($request->order_by)) {
                 switch ($request->order_by) {
                     case 'sale_price':

@@ -101,7 +101,7 @@ class DatabaseController extends Controller
             "records" => $records,
             "limit" => $limit,
             "offset" => $offset,
-            "length" => $data->count()
+            "length" => $data->count($count_column)
         ];
     }
 

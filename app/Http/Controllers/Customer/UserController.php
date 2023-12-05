@@ -31,10 +31,20 @@ class UserController extends Controller
     public function changePassword(Request $request)
     {
         $customer = $request->user();
-        echo $customer->password;
         $validate = Validator::make(['new_password' => $request->new_password], [
-            'new_password' => ['required', 'string', 'min:8']
+            'new_password' => ['required', 'string', 'min:8'],
+            'old_password' => ['required']
         ]);
+        if ($validate->fails()) {
+            return response()->json([
+                'code' => 400,
+                'message' => 'Change password failed',
+                'data' =>
+                    [
+                        "errors" => $validate->errors()
+                    ]
+            ], 400);
+        }
         if (
             bcrypt(str($request->old_password)->toString()) != $customer->password
         ) {
@@ -46,16 +56,6 @@ class UserController extends Controller
                         __('messages.user.password.wrong')
                     ]
                 ]
-            ], 400);
-        }
-        if ($validate->fails()) {
-            return response()->json([
-                'code' => 400,
-                'message' => 'Change password failed',
-                'data' =>
-                    [
-                        "errors" => $validate->errors()
-                    ]
             ], 400);
         }
         if (bcrypt(str($request->new_password)->toString()) == $customer->password) {
