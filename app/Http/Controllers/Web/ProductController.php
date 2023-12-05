@@ -41,9 +41,10 @@ class ProductController extends Controller
                 ], 400);
             }
             $conditions = [
+                "&&",
                 ['products.state', '=', ProductState::PUBLISHED],
-                ['brands.state', '=', BrandState::ACTIVE],
                 ['product_variants.state', '=', ProductVariantState::PUBLISHED],
+                ['brands.state', '=', BrandState::ACTIVE],
                 ['product_variants.sale_price', '<=', $request->max_price ?? 999999999],
                 ['product_variants.sale_price', '>=', $request->min_price ?? 0]
             ];
@@ -60,17 +61,6 @@ class ProductController extends Controller
                     $conditions[] = "||";
                 }
             }
-            // if (isset($request->order_by)) {
-            //     $conditions[] = "&&";
-            //     $conditions[] = ['product_variants.' . $request->order_by, $request->order ?? 'asc'];
-            // }
-
-            // $products = DatabaseController::searchRead('Product', $conditions, ['id', 'name', 'slug', 'brand_id'], ['brand:id,name,image'], $request->offset ?? 0, $request->limit ?? 10);
-            // $products = Product::join('brands', 'brands.id', '=', 'products.brand_id')
-            //     ->join('product_variants', 'products.id', '=', 'product_variants.product_id')
-            //     ->select(['products.id', 'products.name', 'products.slug'])
-            //     ->where($conditions)
-            //     ->distinct();
             if (isset($request->order_by)) {
                 switch ($request->order_by) {
                     case 'sale_price':
@@ -89,7 +79,6 @@ class ProductController extends Controller
             } else {
                 $order_by = 'products.id';
             }
-
             $products = DatabaseController::searchRead(
                 'Product',
                 $conditions,
@@ -113,6 +102,7 @@ class ProductController extends Controller
                 [
                     "left",
                     ["brands", "brands.id", "=", "products.brand_id"],
+                    "left",
                     ["product_variants", "products.id", "=", "product_variants.product_id"]
                 ],
                 ['products.id'],

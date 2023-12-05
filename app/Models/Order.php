@@ -37,9 +37,9 @@ class Order extends Model
         'payment_state' => PaymentState::class
     ];
 
-    protected $hidden = ['id', 'customer_id', 'employee_id'];
+    protected $hidden = ['customer_id', 'employee_id'];
 
-    protected $appends = ['order_id', 'total'];
+    protected $appends = ['total'];
 
     // protected $with = ['customer:id,first_name,last_name', 'employee:id,first_name,last_name'];
 

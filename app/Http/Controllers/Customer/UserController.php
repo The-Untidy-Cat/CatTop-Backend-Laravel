@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $customer = $request->user()->customer()->first()->only(['id', 'first_name', 'last_name', 'email', 'phone_number']);
+        $customer = $request->user()->customer()->first()->only(['id', 'first_name', 'last_name', 'email', 'phone_number', 'gender', 'date_of_birth']);
         $cart = Cart::where([['customer_id', '=', $request->user()->customer()->first()->id]]);
         $cart = $cart->with([
             'variant:id,name,product_id,sale_price,discount,standard_price,image,state',
@@ -84,17 +84,14 @@ class UserController extends Controller
             ], 400);
         }
         $customer = $request->user()->customer()->first();
-        $customer->first_name = $request->first_name;
-        $customer->last_name = $request->last_name;
-        $customer->phone_number = $request->phone_number;
-        $customer->email = $request->email;
+        $customer->fill($request->all());
         $customer->save();
         return response()->json([
             'status' => true,
             'message' => __('messages.update.success', ['name' => 'Profile']),
             'data' =>
                 [
-                    "user" => $customer
+                    "user" => $customer->only(['id', 'first_name', 'last_name', 'email', 'phone_number', 'gender', 'date_of_birth'])
                 ]
         ]);
     }

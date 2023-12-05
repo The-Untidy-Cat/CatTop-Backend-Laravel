@@ -38,8 +38,8 @@ class AuthController extends Controller
             'password' => bcrypt($request->password),
         ]);
         $user->customer()->create([
-            'first_name' => trim(strtoupper($request->first_name)),
-            'last_name' => trim(strtoupper($request->last_name)),
+            'first_name' => trim(ucwords($request->first_name)),
+            'last_name' => trim(ucwords($request->last_name)),
             'phone_number' => $request->phone_number,
             'email' => $request->email,
         ]);
