@@ -35,7 +35,7 @@ class AuthController extends Controller
         }
         $user = User::create([
             'username' => $request->username,
-            'password' => bcrypt($request->password),
+            'password' => bcrypt(str($request->password)->toString()),
         ]);
         $user->customer()->create([
             'first_name' => trim(ucwords($request->first_name)),

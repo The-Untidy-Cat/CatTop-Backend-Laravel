@@ -20,9 +20,9 @@ class OrderController extends Controller
     {
         $orders = auth()->user()->customer()->first()
             ->orders()->with([
-                    'items:variant_id,amount',
-                    'items.variant:id,name',
-                    'items.variant.product:id,name,slug,image,state',
+                    'items:variant_id,amount,standard_price,sale_price,total,order_id',
+                    'items.variant:id,name,product_id',
+                    'items.variant.product:id,name,slug,image',
                 ])->get(['id', 'state', 'created_at']);
         return response()->json([
             'code' => 200,

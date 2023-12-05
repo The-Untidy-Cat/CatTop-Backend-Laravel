@@ -67,6 +67,7 @@ class AddressBookController extends Controller
     public function update(Request $request, $id) {
         $addressBook = new AddressBook();
         $addressBook = $addressBook->find($id);
+        $request->merge(['customer_id' => auth()->user()->customer()->first()->id]);
         $validate = $addressBook->validate($request->all());
         if ($validate->fails()) {
             return response()->json([

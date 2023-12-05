@@ -67,4 +67,6 @@ return [
     'cart.updated' => 'Cart updated',
     'cart.deleted' => 'Cart deleted',
     'cart.empty' => 'Cart is empty',
+    'user.password.duplication' => 'Password must be different from the old password',
+    'user.password.wrong' => 'Wrong password',
 ];

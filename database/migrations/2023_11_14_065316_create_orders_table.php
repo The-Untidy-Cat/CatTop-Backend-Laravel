@@ -18,7 +18,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
+            $table->id()->startingValue(1000);
             $table->foreignIdFor(Customer::class, 'customer_id')->nullable(false)->references('id')->on('customers');
             $table->foreignIdFor(Employee::class, 'employee_id')->nullable(true)->references('id')->on('employees');
             $table->enum('shopping_method', ShoppingMethod::toArray())->nullable(false)->default(ShoppingMethod::OFFLINE);

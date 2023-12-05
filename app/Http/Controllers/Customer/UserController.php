@@ -31,9 +31,23 @@ class UserController extends Controller
     public function changePassword(Request $request)
     {
         $customer = $request->user();
-        $validate = Validator::make(['password' => $request->password], [
-            'password' => ['required', 'string', 'min:8']
+        echo $customer->password;
+        $validate = Validator::make(['new_password' => $request->new_password], [
+            'new_password' => ['required', 'string', 'min:8']
         ]);
+        if (
+            bcrypt(str($request->old_password)->toString()) != $customer->password
+        ) {
+            return response()->json([
+                'code' => 400,
+                'message' => __('messages.validation.error'),
+                "errors" => [
+                    "old_password" => [
+                        __('messages.user.password.wrong')
+                    ]
+                ]
+            ], 400);
+        }
         if ($validate->fails()) {
             return response()->json([
                 'code' => 400,
@@ -44,18 +58,18 @@ class UserController extends Controller
                     ]
             ], 400);
         }
-        if (bcrypt($request->password) == $customer->password) {
+        if (bcrypt(str($request->new_password)->toString()) == $customer->password) {
             return response()->json([
                 'code' => 400,
                 'message' => __('messages.validation.error'),
                 "errors" => [
-                    "password" => [
-                        "Password must be different from the old password"
+                    "new_password" => [
+                        __('messages.user.password.duplicate')
                     ]
                 ]
             ], 400);
         }
-        $customer->password = bcrypt($request->password);
+        $customer->password = bcrypt(str($request->new_password)->toString());
         $customer->save();
         return response()->json([
             'status' => true,
