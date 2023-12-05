@@ -33,7 +33,6 @@ class UserController extends Controller
         $customer = $request->user();
         $validate = Validator::make($request->all(), [
             'new_password' => ['required', 'string', 'min:8'],
-            'old_password' => ['required']
         ]);
         if ($validate->fails()) {
             return response()->json([
@@ -43,30 +42,6 @@ class UserController extends Controller
                     [
                         "errors" => $validate->errors()
                     ]
-            ], 400);
-        }
-        if (
-            password_hash(str($request->old_password)->toString(), PASSWORD_DEFAULT) != $customer->password
-        ) {
-            return response()->json([
-                'code' => 400,
-                'message' => __('messages.validation.error'),
-                "errors" => [
-                    "old_password" => [
-                        __('messages.user.password.wrong')
-                    ]
-                ]
-            ], 400);
-        }
-        if (password_hash(str($request->new_password)->toString(), PASSWORD_DEFAULT) == $customer->password) {
-            return response()->json([
-                'code' => 400,
-                'message' => __('messages.validation.error'),
-                "errors" => [
-                    "new_password" => [
-                        __('messages.user.password.duplicate')
-                    ]
-                ]
             ], 400);
         }
         $customer->password = password_hash(str($request->new_password)->toString(), PASSWORD_DEFAULT);
