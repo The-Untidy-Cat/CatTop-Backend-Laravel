@@ -28,6 +28,11 @@ class AddressBook extends Model
         return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'address_id', 'id');
+    }
+
     public function validate($data)
     {
         $rules = [

@@ -87,4 +87,8 @@ class Order extends Model
     {
         return $this->hasMany(OrderHistory::class, "order_id", "id");
     }
+    public function address()
+    {
+        return $this->belongsTo(AddressBook::class, "address_id", "id");
+    }
 }
