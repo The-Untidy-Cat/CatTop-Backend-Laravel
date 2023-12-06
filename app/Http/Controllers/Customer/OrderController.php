@@ -21,7 +21,7 @@ class OrderController extends Controller {
                     'items:variant_id,amount,standard_price,sale_price,total,order_id',
                     'items.variant:id,name,product_id',
                     'items.variant.product:id,name,slug,image',
-                ])->get(['id', 'state', 'created_at']);
+                ])->orderBy('id', 'desc')->get(['id', 'state', 'created_at']);
         return response()->json([
             'code' => 200,
             'data' => ['orders' => $orders]
@@ -48,6 +48,7 @@ class OrderController extends Controller {
         ], 200);
     }
     public function store(Request $request) {
+        $order = new Order();
         try {
             $failed = [];
             $validate = Validator::make($request->all(), [
@@ -85,7 +86,7 @@ class OrderController extends Controller {
                         'errors' => $validate->errors()
                     ], 400);
                 }
-                $order = auth()->user()->customer()->first()->orders()->create([
+                $order->fill([
                     'state' => OrderState::PENDING,
                     'customer_id' => auth()->user()->customer()->first()->id,
                     'employee_id' => null,
@@ -94,6 +95,7 @@ class OrderController extends Controller {
                     'address_id' => $request->address_id,
                     'note' => $request->note
                 ]);
+                $order->save();
                 foreach($request->items as $item) {
                     $order->items()->create([
                         'variant_id' => $item['variant_id'],
@@ -102,15 +104,6 @@ class OrderController extends Controller {
                         'sale_price' => ProductVariant::find($item['variant_id'])->sale_price,
                         'total' => $item['amount'] * ProductVariant::find($item['variant_id'])->sale_price
                     ]);
-                    // $cart_item = auth()->user()->customer()->first()->cart()->where('variant_id', $item['variant_id'])->first();
-                    // if ($cart_item) {
-                    //     if ($cart_item->amount > $item['amount']) {
-                    //         $cart_item->amount -= $item['amount'];
-                    //         $cart_item->save();
-                    //     } else {
-                    //         $cart_item->delete();
-                    //     }
-                    // }
                 }
             } else {
                 $cart = auth()->user()->customer()->first()->cart()->with([
@@ -123,7 +116,7 @@ class OrderController extends Controller {
                         'message' => __('messages.cart.empty')
                     ], 400);
                 }
-                $order = auth()->user()->customer()->first()->orders()->create([
+                $order->fill([
                     'state' => OrderState::PENDING,
                     'customer_id' => auth()->user()->customer()->first()->id,
                     'employee_id' => null,
@@ -132,7 +125,7 @@ class OrderController extends Controller {
                     'address_id' => $request->address_id,
                     'note' => $request->note
                 ]);
-
+                $order->save();
                 foreach($cart as $item) {
                     $variant = ProductVariant::find($item->variant_id);
                     if(!$variant || $variant->state != ProductVariantState::PUBLISHED) {
@@ -148,25 +141,15 @@ class OrderController extends Controller {
                     ]);
                 }
                 $cart->each->delete();
-
             }
             return response()->json([
                 'code' => 200,
                 'data' => [
-                    'detail' => $order->with([
+                    'detail' => $order->load([
                         'items:id,variant_id,amount,order_id,total,sale_price,standard_price',
                         'items.variant:id,name,product_id',
                         'items.variant.product:id,name,slug,image,state',
-                    ])->first([
-                                "shopping_method",
-                                "payment_method",
-                                "payment_state",
-                                "state",
-                                "tracking_no",
-                                "address_id",
-                                "note",
-                                "id"
-                            ]),
+                    ])->only(['id', 'state', 'created_at']),
                     'failed' => $failed
                 ]
             ], 200);
