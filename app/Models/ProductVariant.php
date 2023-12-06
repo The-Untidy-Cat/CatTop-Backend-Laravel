@@ -70,7 +70,10 @@ class ProductVariant extends Model
     {
         return $this->hasMany(OrderItem::class, 'variant_id', 'id');
     }
-
+    public function reviews()
+    {
+        return $this->orders()->where('rating', '>', 0)->select(['id', 'rating', 'review']);
+    }
     public function specificatonsTemplate(): array
     {
         $cpu = [];

@@ -41,7 +41,7 @@ class OrderController extends Controller {
             'data' => ['order' => $order->with([
                 'address',
                 'histories:order_id,state,created_at',
-                'items:variant_id,amount,order_id,total,sale_price,standard_price,order_id',
+                'items:id,variant_id,amount,order_id,total,sale_price,standard_price,order_id,rating,review',
                 'items.variant:id,name,product_id',
                 'items.variant.product:id,name,slug,image,state',
             ])->first()]
@@ -161,5 +161,42 @@ class OrderController extends Controller {
             ], 500);
         }
 
+    }
+    public function rate(Request $request, $id, $item_id) {
+        $order = auth()->user()->customer()->first()
+            ->orders()->find($id);
+        if(!$order) {
+            return response()->json([
+                'code' => 404,
+                'message' => __('messages.not_found')
+            ], 404);
+        }
+        $item = $order->items()->find($item_id);
+        if(!$item) {
+            return response()->json([
+                'code' => 404,
+                'message' => __('messages.not_found')
+            ], 404);
+        }
+        $validate = Validator::make($request->all(), [
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'review' => ['string']
+        ]);
+        if($validate->fails()) {
+            return response()->json([
+                'code' => 400,
+                'message' => __('message.validation.error'),
+                'errors' => $validate->errors()
+            ], 400);
+        }
+        $item->fill([
+            'rating' => $request->rating,
+            'review' => $request->review
+        ]);
+        $item->save();
+        return response()->json([
+            'code' => 200,
+            'data' => ['item' => $item]
+        ], 200);
     }
 }

@@ -19,14 +19,19 @@ Route::middleware(['auth:sanctum', CustomerPermission::class])->group(
         Route::group(['prefix' => '/orders'], function () {
             Route::get('/', [OrderController::class, 'index']);
             Route::post('/', [OrderController::class, 'store']);
-            Route::get('/{id}', [OrderController::class, 'show']);
+            Route::group(['prefix' => '/{id}'], function () {
+                Route::get('/', [OrderController::class, 'show']);
+                Route::put('/', [OrderController::class, 'update']);
+                Route::delete('/', [OrderController::class, 'destroy']);
+                Route::post('/items/{item_id}/rate', [OrderController::class, 'rate']);
+            });
         });
         Route::group(['prefix' => '/address'], function () {
             Route::get('/', [AddressBookController::class, 'index']);
             Route::post('/', [AddressBookController::class, 'store']);
             Route::put('/{id}', [AddressBookController::class, 'update']);
         });
-        Route::group(['prefix'=> '/cart'], function(){
+        Route::group(['prefix' => '/cart'], function () {
             Route::get('/', [CartController::class, 'show']);
             Route::post('/', [CartController::class, 'store']);
             Route::put('/{id}', [CartController::class, 'update']);

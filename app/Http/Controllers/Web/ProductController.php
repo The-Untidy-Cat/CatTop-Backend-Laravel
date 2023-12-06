@@ -191,7 +191,18 @@ class ProductController extends Controller
                             "state",
                         ])
                             ->where('state', '=', ProductVariantState::PUBLISHED)->orWhere('state', '=', ProductVariantState::OUT_OF_STOCK);
-                    }
+                    },
+                    'variants.reviews' => function ($query) {
+                        $query->select([
+                            'order_items.id',
+                            'first_name',
+                            'last_name',
+                            'variant_id',
+                            'order_id',
+                            'rating',
+                            'review',
+                        ])->join('orders', 'order_items.order_id', '=', 'orders.id')->join('customers', 'orders.customer_id', '=', 'customers.id');
+                    },
                 ])
                 ->first(['id', 'name', 'slug', 'brand_id', 'description', 'image', 'state']);
             return response()->json([

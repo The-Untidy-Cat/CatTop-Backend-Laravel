@@ -16,8 +16,6 @@ class OrderItem extends Model
         'sale_price',
         'total',
         'is_refund',
-        'rating',
-        'review',
     ];
 
     protected $attributes = [
@@ -32,5 +30,10 @@ class OrderItem extends Model
     public function variant()
     {
         return $this->belongsTo(ProductVariant::class, 'variant_id', 'id');
+    }
+
+    public function customer()
+    {
+        return $this->order()->select('customer_id')->first()->customer_id;
     }
 }
