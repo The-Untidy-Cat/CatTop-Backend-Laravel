@@ -53,7 +53,7 @@ class OrderController extends Controller
         try {
             $failed = [];
             $validate = Validator::make($request->all(), [
-                'address_id' => 'required|exists:address_books,id',
+                'address_id' => 'exists:address_books,id',
                 'payment_method' => ['required', Rule::enum(PaymentMethod::class)],
                 'note' => ['string'],
                 'items' => ['array']
