@@ -38,10 +38,7 @@ class UserController extends Controller
             return response()->json([
                 'code' => 400,
                 'message' => 'Change password failed',
-                'data' =>
-                    [
-                        "errors" => $validate->errors()
-                    ]
+                "errors" => $validate->errors()
             ], 400);
         }
         $customer->password = password_hash(str($request->new_password)->toString(), PASSWORD_DEFAULT);

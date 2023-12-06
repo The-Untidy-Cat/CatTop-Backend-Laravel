@@ -26,7 +26,7 @@ class ProductVariantController extends Controller
         $variants = DatabaseController::searchRead(
             'ProductVariant',
             [['product_id', '=', $product_id]],
-            ['id', 'sku', 'name', 'standard_price', 'state'],
+            ['id', 'sku', 'name', 'standard_price', 'discount', 'sale_price', 'state'],
             [],
             [],
             ['*'],
