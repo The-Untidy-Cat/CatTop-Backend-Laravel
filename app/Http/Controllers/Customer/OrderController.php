@@ -65,13 +65,16 @@ class OrderController extends Controller
                     'errors' => $validate->errors()
                 ], 400);
             }
-            $address = auth()->user()->customer()->first()->addressBooks()->find($request->address_id);
-            if (!$address) {
-                return response()->json([
-                    'code' => 404,
-                    'message' => __('messages.not_found')
-                ], 404);
+            if (isset($request->address_id)) {
+                $address = auth()->user()->customer()->first()->addressBooks()->find($request->address_id);
+                if (!$address) {
+                    return response()->json([
+                        'code' => 404,
+                        'message' => __('messages.not_found', ['name' => 'address'])
+                    ], 400);
+                }
             }
+
             if (isset($request->items)) {
                 $validate = Validator::make($request->all(), [
                     'items.*.variant_id' => ['required', new ValidCartItem()],
@@ -99,7 +102,7 @@ class OrderController extends Controller
                         'amount' => $item['amount'],
                         'standard_price' => ProductVariant::find($item['variant_id'])->standard_price,
                         'sale_price' => ProductVariant::find($item['variant_id'])->sale_price,
-                        'total' =>  $item['amount'] * ProductVariant::find($item['variant_id'])->sale_price
+                        'total' => $item['amount'] * ProductVariant::find($item['variant_id'])->sale_price
                     ]);
                     // $cart_item = auth()->user()->customer()->first()->cart()->where('variant_id', $item['variant_id'])->first();
                     // if ($cart_item) {
@@ -156,7 +159,7 @@ class OrderController extends Controller
                         'items:id,variant_id,amount,order_id,total,sale_price,standard_price',
                         'items.variant:id,name,product_id',
                         'items.variant.product:id,name,slug,image,state',
-                    ])->get([
+                    ])->first([
                                 "shopping_method",
                                 "payment_method",
                                 "payment_state",
