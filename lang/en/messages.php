@@ -37,6 +37,7 @@ return [
     'order.state.refunded' => 'Refunded',
     'order.state.failed' => 'Failed',
     'order.payment_state.error' => 'Must be paid before completing the order',
+    'order.state_not_allowed' => 'Order state not allowed',
     'product.state.draft' => 'Draft',
     'product.state.published' => 'Published',
     'product.state.archived' => 'Archived',

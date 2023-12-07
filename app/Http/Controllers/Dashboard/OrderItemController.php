@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\OrderState;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\DatabaseController;
 use App\Models\Order;
@@ -51,6 +52,19 @@ class OrderItemController extends Controller
                 'message' => __('messages.not_found'),
             ], 404);
         }
+        if (
+            in_array($request->state, [OrderState::CONFIRMED->value,
+                OrderState::DELIVERING->value,
+                OrderState::DELIVERED->value,
+                OrderState::CANCELLED->value,
+                OrderState::REFUNDED->value,
+                OrderState::FAILED->value])
+        ) {
+            return response()->json([
+                'code' => 400,
+                'message' => __('messages.order.state_not_allowed'),
+            ], 400);
+        }
         $validator = Validator::make($request->all(), [
             'variant_id' => 'required|exists:product_variants,id',
             'amount' => 'required|integer|min:1',
@@ -87,13 +101,27 @@ class OrderItemController extends Controller
             'data' => $order->items()->where('variant_id', $request->variant_id)->first()
         ], 200);
     }
-    public function update (Request $request, $order_id, $item_id) {
+    public function update(Request $request, $order_id, $item_id)
+    {
         $order = Order::find($order_id);
         if (!$order) {
             return response()->json([
                 'code' => 404,
                 'message' => __('messages.not_found'),
             ], 404);
+        }
+        if (
+            in_array($request->state, [OrderState::CONFIRMED->value,
+                OrderState::DELIVERING->value,
+                OrderState::DELIVERED->value,
+                OrderState::CANCELLED->value,
+                OrderState::REFUNDED->value,
+                OrderState::FAILED->value])
+        ) {
+            return response()->json([
+                'code' => 400,
+                'message' => __('messages.order.state_not_allowed'),
+            ], 400);
         }
         $orderItem = OrderItem::find($item_id);
         if (!$orderItem) {
@@ -123,13 +151,27 @@ class OrderItemController extends Controller
             'data' => $orderItem
         ], 200);
     }
-    public function delete(Request $request, $order_id, $item_id) {
+    public function delete(Request $request, $order_id, $item_id)
+    {
         $order = Order::find($order_id);
         if (!$order) {
             return response()->json([
                 'code' => 404,
                 'message' => __('messages.not_found'),
             ], 404);
+        }
+        if (
+            in_array($request->state, [OrderState::CONFIRMED->value,
+                OrderState::DELIVERING->value,
+                OrderState::DELIVERED->value,
+                OrderState::CANCELLED->value,
+                OrderState::REFUNDED->value,
+                OrderState::FAILED->value])
+        ) {
+            return response()->json([
+                'code' => 400,
+                'message' => __('messages.order.state_not_allowed'),
+            ], 400);
         }
         $orderItem = OrderItem::find($item_id);
         if (!$orderItem) {
