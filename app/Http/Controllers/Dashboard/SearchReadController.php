@@ -39,7 +39,7 @@ class SearchReadController extends Controller
             $request->joins ?? [],
             ['*'],
             $request->offset ?? 0,
-            $request->limit ?? 10,
+            $request->limit ?? 0,
             $request->order_by ?? null,
             $request->order ?? null
         );

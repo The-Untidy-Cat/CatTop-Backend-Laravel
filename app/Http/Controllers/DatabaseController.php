@@ -29,7 +29,7 @@ class DatabaseController extends Controller
         return ["limit" => $limit, "offset" => $offset, "length" => $length, "result" => $data];
     }
 
-    public static function searchRead(string $model, array $conditions, array $attributes, array $with = [], array $joins = [], array $count_column = ['*'], int $offset = 0, int $limit = 20, string $order_by = null, string $order = null)
+    public static function searchRead(string $model, array $conditions, array $attributes, array $with = [], array $joins = [], array $count_column = ['*'], int $offset = 0, int $limit = 0, string $order_by = null, string $order = null)
     {
         $model = app("App\\Models\\$model");
         $data = $model;
@@ -90,9 +90,13 @@ class DatabaseController extends Controller
             $data = $data->orderBy($order_by, $order);
         }
         $data = $data->distinct();
-        $offset = isset($offset) && $offset > 0 ? $offset : 0;
-        $limit = isset($limit) && $limit > 0 ? $limit : 20;
-        $records = $data->offset($offset)->limit($limit);
+        $records = $data;
+        if (isset($offset) && $offset > 0 ){
+            $records = $records->offset($offset);
+        }
+        if (isset($limit) && $limit > 0 ){
+            $records = $records->limit($limit);
+        }
         if (isset($with)) {
             $records = $records->with($with);
         }

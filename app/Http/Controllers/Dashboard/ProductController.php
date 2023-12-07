@@ -19,9 +19,9 @@ class ProductController extends Controller
             'data' => $products
         ], 200);
     }
-    public function show($id)
+    public function show($product_id)
     {
-        $product = Product::find($id);
+        $product = Product::find($product_id);
         if (!$product) {
             return response()->json([
                 'code' => 404,
@@ -53,9 +53,9 @@ class ProductController extends Controller
             'data' => $product->get(['id', 'name', 'slug', 'description', 'image', 'state', 'brand_id'])
         ], 200);
     }
-    public function update(Request $request, $id)
+    public function update(Request $request, $product_id)
     {
-        $product = Product::find($id);
+        $product = Product::find($product_id);
         if (!$product) {
             return response()->json([
                 'code' => 404,

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dashboard\OrderItemController;
 use App\Http\Controllers\Dashboard\SearchReadController;
 use App\Http\Controllers\Dashboard\BrandController;
 use App\Http\Controllers\Dashboard\CustomerController;
@@ -34,8 +35,8 @@ Route::middleware(['auth:sanctum', 'auth.dash'])->group(
         Route::prefix('products')->group(function () {
             Route::get('/', [ProductController::class, 'index']);
             Route::post('/', [ProductController::class, 'store']);
-            Route::get('/{id}', [ProductController::class, 'show']);
-            Route::put('/{id}', [ProductController::class, 'update']);
+            Route::get('/{product_id}', [ProductController::class, 'show']);
+            Route::put('/{product_id}', [ProductController::class, 'update']);
             Route::prefix('{product_id}/variants')->group(function () {
                 Route::get('/', [ProductVariantController::class, 'index']);
                 Route::post('/', [ProductVariantController::class, 'store']);
@@ -49,9 +50,19 @@ Route::middleware(['auth:sanctum', 'auth.dash'])->group(
             Route::get('/{id}', [CustomerController::class, 'show']);
             Route::put('/{id}', [CustomerController::class, 'update']);
         });
-        Route::prefix('orders')->group(function (){
+        Route::prefix('orders')->group(function () {
             Route::get('/', [OrderController::class, 'index']);
             Route::post('/', [OrderController::class, 'create']);
+            Route::prefix('{order_id}')->group(function () {
+                Route::get('/', [OrderController::class, 'show']);
+                Route::put('/', [OrderController::class, 'update']);
+                Route::prefix('items')->group(function () {
+                    Route::get('/', [OrderItemController::class, 'index']);
+                    Route::post('/', [OrderItemController::class, 'create']);
+                    Route::put('/{item_id}', [OrderItemController::class, 'update']);
+                    Route::delete('/{item_id}', [OrderItemController::class, 'delete']);
+                });
+            });
         });
     }
 );

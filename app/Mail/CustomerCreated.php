@@ -34,7 +34,7 @@ class CustomerCreated extends Mailable
     }
     public function build()
     {
-        return $this->subject(__('messages.customer.created'))->markdown('emails.customer.created');
+        return $this->subject(__('messages.customer.created'))->markdown('emails.customer_created');
     }
     /**
      * Get the message content definition.
@@ -42,7 +42,7 @@ class CustomerCreated extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.customer.created',
+            view: 'emails.customer_created',
         );
     }
 
