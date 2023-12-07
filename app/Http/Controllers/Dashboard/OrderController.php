@@ -23,6 +23,7 @@ class OrderController extends Controller
                 "customer_id",
                 "employee_id",
                 "shopping_method",
+                "created_at",
                 "state"
             ],
             [
