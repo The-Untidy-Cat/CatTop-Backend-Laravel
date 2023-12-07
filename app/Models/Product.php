@@ -65,7 +65,6 @@ class Product extends Model
     public function variants()
     {
         return $this->hasMany(ProductVariant::class, 'product_id', 'id');
-        // ->select(['id', 'name', 'image', 'SKU', 'standard_price', 'sale_price', 'specifications', 'product_id']);
     }
     public function validate($data)
     {

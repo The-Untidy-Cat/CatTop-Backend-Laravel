@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Enums\ProductState;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\DatabaseController;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -31,7 +33,9 @@ class ProductController extends Controller
         return response()->json([
             'code' => 200,
             'message' => __('messages.list.success', ['name' => 'product']),
-            'data' => $product->get(['id', 'name', 'slug', 'description', 'image', 'state', 'brand_id'])
+            'data' => $product->load(
+                'variants:id,name,sku,product_id,standard_price,sale_price,discount,state', 'brand:id,name,image'
+            )->only(['id', 'name', 'slug', 'description', 'image', 'state', 'variants', 'brand'])
         ], 200);
     }
     public function store(Request $request)
@@ -63,10 +67,9 @@ class ProductController extends Controller
             ], 404);
         }
         $validate = Validator::make($request->all(), [
-            "name" => "required",
-            "slug" => "required",
-            "description" => "required",
-            "brand_id" => "required",
+            "slug" => "unique:products,slug",
+            "brand_id" => "exists:brands,id",
+            "state" => [Rule::enum(ProductState::class)]
         ]);
         if ($validate->fails()) {
             return response()->json([
