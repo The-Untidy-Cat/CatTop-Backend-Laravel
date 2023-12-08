@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 
-class Customer extends Model
-{
+class Customer extends Model {
     use HasFactory;
     protected $table = "customers";
 
@@ -25,24 +24,19 @@ class Customer extends Model
         'email',
     ];
 
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo(User::class, "user_id", "id");
     }
-    public function addressBooks()
-    {
+    public function addressBooks() {
         return $this->hasMany(AddressBook::class, "customer_id", "id");
     }
-    public function cart()
-    {
+    public function cart() {
         return $this->hasMany(Cart::class, "customer_id", "id");
     }
-    public function orders()
-    {
+    public function orders() {
         return $this->hasMany(Order::class, "customer_id", "id");
     }
-    public function getOrderCountAttribute()
-    {
+    public function getOrderCountAttribute() {
         return $this->orders()->count();
     }
     protected $casts = [
@@ -52,12 +46,11 @@ class Customer extends Model
     protected $appends = [
         'order_count'
     ];
-    public function validate($data)
-    {
+    public function validate($data) {
         $rules = [
             "first_name" => "required|string",
             "last_name" => "required|string",
-            "phone_number" => ["required", new PhoneNumber],
+            "phone_number" => ["required", new PhoneNumber, "unique:users,username", "unique:customers,phone_number"],
             "date_of_birth" => "date",
             "gender" => "required|in:0,1",
             "email" => "required|email|unique:customers,email",
