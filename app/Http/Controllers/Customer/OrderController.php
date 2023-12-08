@@ -47,7 +47,7 @@ class OrderController extends Controller {
             ])->first()]
         ], 200);
     }
-    public function store(Request $request) {
+    public function create(Request $request) {
         $order = new Order();
         try {
             $failed = [];

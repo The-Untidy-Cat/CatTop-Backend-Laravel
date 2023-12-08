@@ -27,26 +27,26 @@ Route::middleware(['auth:sanctum', 'auth.dash'])->group(
         Route::post('/search_read', [SearchReadController::class, 'index']);
         Route::prefix('brands')->group(function () {
             Route::get('/', [BrandController::class, 'index']);
-            Route::post('/', [BrandController::class, 'store']);
+            Route::post('/', [BrandController::class, 'create']);
             Route::get('/state', [BrandController::class, 'state']);
             Route::get('/{id}', [BrandController::class, 'show']);
             Route::put('/{id}', [BrandController::class, 'update']);
         });
         Route::prefix('products')->group(function () {
             Route::get('/', [ProductController::class, 'index']);
-            Route::post('/', [ProductController::class, 'store']);
+            Route::post('/', [ProductController::class, 'create']);
             Route::get('/{product_id}', [ProductController::class, 'show']);
             Route::put('/{product_id}', [ProductController::class, 'update']);
             Route::prefix('{product_id}/variants')->group(function () {
                 Route::get('/', [ProductVariantController::class, 'index']);
-                Route::post('/', [ProductVariantController::class, 'store']);
+                Route::post('/', [ProductVariantController::class, 'create']);
                 Route::get('/{variant_id}', [ProductVariantController::class, 'show']);
                 Route::put('/{variant_id}', [ProductVariantController::class, 'update']);
             });
         });
         Route::prefix('customers')->group(function () {
             Route::get('/', [CustomerController::class, 'index']);
-            Route::post('/', [CustomerController::class, 'store']);
+            Route::post('/', [CustomerController::class, 'create']);
             Route::get('/{id}', [CustomerController::class, 'show']);
             Route::put('/{id}', [CustomerController::class, 'update']);
         });

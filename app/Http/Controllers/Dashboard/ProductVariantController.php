@@ -75,7 +75,7 @@ class ProductVariantController extends Controller
             ])
         ], 200);
     }
-    public function store(Request $request, $product_id)
+    public function create(Request $request, $product_id)
     {
         $variant = new ProductVariant();
         $request->merge(['product_id' => $product_id]);

@@ -21,7 +21,7 @@ class CartController extends Controller
             'data' => ['cart' => $cart]
         ], 200);
     }
-    public function store(Request $request)
+    public function create(Request $request)
     {
         $validate = Validator::make(
             $request->all(),

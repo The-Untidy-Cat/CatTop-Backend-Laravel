@@ -30,7 +30,7 @@ class AddressBookController extends Controller
             ], 400);
         }
     }
-    public function store(Request $request)
+    public function create(Request $request)
     {
         $addressBook = new AddressBook();
         $addressBook->customer_id = auth()->user()->customer()->first()->id;

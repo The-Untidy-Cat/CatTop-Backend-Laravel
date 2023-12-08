@@ -38,7 +38,7 @@ class ProductController extends Controller
             )->only(['id', 'name', 'slug', 'description', 'image', 'state', 'variants', 'brand'])
         ], 200);
     }
-    public function store(Request $request)
+    public function create(Request $request)
     {
         $product = new Product();
         $validate = $product->validate($request->all());

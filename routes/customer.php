@@ -18,7 +18,7 @@ Route::middleware(['auth:sanctum', CustomerPermission::class])->group(
         });
         Route::group(['prefix' => '/orders'], function () {
             Route::get('/', [OrderController::class, 'index']);
-            Route::post('/', [OrderController::class, 'store']);
+            Route::post('/', [OrderController::class, 'create']);
             Route::group(['prefix' => '/{id}'], function () {
                 Route::get('/', [OrderController::class, 'show']);
                 Route::put('/', [OrderController::class, 'update']);
@@ -28,12 +28,12 @@ Route::middleware(['auth:sanctum', CustomerPermission::class])->group(
         });
         Route::group(['prefix' => '/address'], function () {
             Route::get('/', [AddressBookController::class, 'index']);
-            Route::post('/', [AddressBookController::class, 'store']);
+            Route::post('/', [AddressBookController::class, 'create']);
             Route::put('/{id}', [AddressBookController::class, 'update']);
         });
         Route::group(['prefix' => '/cart'], function () {
             Route::get('/', [CartController::class, 'show']);
-            Route::post('/', [CartController::class, 'store']);
+            Route::post('/', [CartController::class, 'create']);
             Route::put('/{id}', [CartController::class, 'update']);
             Route::delete('/', [CartController::class, 'clear']);
         });

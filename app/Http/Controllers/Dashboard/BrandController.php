@@ -44,7 +44,7 @@ class BrandController extends Controller
             'data' => $brand
         ], 200);
     }
-    public function store(Request $request)
+    public function create(Request $request)
     {
         $brand = new Brand();
         $validate = $brand->validate($request->all());
