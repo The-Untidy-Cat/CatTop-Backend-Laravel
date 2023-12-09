@@ -144,10 +144,10 @@ class OrderController extends Controller
     }
 
     public function statistics(Request $request){
-        $data = Order::selectRaw('count(orders.id) as total_order, sum(product_variants.sale_price * order_items.amount) as total_sale, sum(product_variants.standard_price * order_items.amount) as total_standard, sum(order_items.amount) as total_amount, orders.state as state');
+        $data = Order::selectRaw('count(orders.id) as total_order, sum(order_items.sale_price * order_items.amount) as total_sale, sum(order_items.standard_price * order_items.amount) as total_standard, sum(order_items.amount) as total_amount, orders.state as state');
         $data = $data->join('order_items', 'order_items.order_id', '=', 'orders.id');
         if($request->start_date && $request->end_date){
-            $data = $data->whereBetween('created_at', [$request->start_date, $request->end_date]);
+            $data = $data->whereBetween('orders.created_at', [$request->start_date, $request->end_date]);
         }
         $data = $data->groupBy('state')->get();
         return response()->json([
