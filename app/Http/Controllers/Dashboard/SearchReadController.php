@@ -20,6 +20,7 @@ class SearchReadController extends Controller
             "limit" => ["integer", "min:1"],
             "with" => ["array"],
             "joins" => ["array"],
+            "count" => ["array"],
             "order_by" => ["string"],
             "order" => ["string", "in:asc,desc"],
         ]);
@@ -37,7 +38,7 @@ class SearchReadController extends Controller
             $request->fields ?? [],
             $request->with ?? [],
             $request->joins ?? [],
-            ['*'],
+            $request->count ?? ['*'],
             $request->offset ?? 0,
             $request->limit ?? 0,
             $request->order_by ?? null,

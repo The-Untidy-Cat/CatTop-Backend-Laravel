@@ -39,7 +39,9 @@ class OrderController extends Controller
             [],
             ['*'],
             $request->offset ? $request->offset : 0,
-            $request->limit ? $request->limit : 10
+            $request->limit ? $request->limit : 10,
+            $request->order_by ?? "created_at",
+            $request->order ?? "desc"
         );
         return response()->json([
             'code' => 200,
@@ -138,6 +140,20 @@ class OrderController extends Controller
                 'items.variant:id,product_id,sku',
                 'items.variant.product:id,name',
             )
+        ], 200);
+    }
+
+    public function statistics(Request $request){
+        $data = Order::selectRaw('count(orders.id) as total_order, sum(product_variants.sale_price * order_items.amount) as total_sale, sum(product_variants.standard_price * order_items.amount) as total_standard, sum(order_items.amount) as total_amount, orders.state as state');
+        $data = $data->join('order_items', 'order_items.order_id', '=', 'orders.id');
+        if($request->start_date && $request->end_date){
+            $data = $data->whereBetween('created_at', [$request->start_date, $request->end_date]);
+        }
+        $data = $data->groupBy('state')->get();
+        return response()->json([
+            'code' => 200,
+            'message' => __('messages.get.success'),
+            'data' => $data
         ], 200);
     }
 }
