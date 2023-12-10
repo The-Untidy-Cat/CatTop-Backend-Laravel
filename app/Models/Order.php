@@ -53,9 +53,9 @@ class Order extends Model
             'payment_state' => ['required', Rule::enum(PaymentState::class)],
             'state' => ['required', Rule::enum(OrderState::class)],
             'note' => ['string'],
-            'items' => ['required', 'array'],
-            'items.*.variant_id' => ['required', new ValidCartItem],
-            'items.*.amount' => ['required', 'integer', 'min:1'],
+            'items' => ['array'],
+            'items.*.variant_id' => ['required_with:items', new ValidCartItem],
+            'items.*.amount' => ['required_with:items', 'integer', 'min:1'],
         ];
         return Validator::make($data, $rules);
     }

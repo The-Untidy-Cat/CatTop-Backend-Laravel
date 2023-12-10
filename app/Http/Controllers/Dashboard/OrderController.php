@@ -65,19 +65,22 @@ class OrderController extends Controller
             ], 400);
         }
         $order->fill($request->all());
-        $order->save();
-        foreach ($request->items as $item) {
-            if ($order->items()->where('variant_id', $item['variant_id'])->first()) {
-                continue;
+        if ($request->has('items')) {
+            foreach ($request->items as $item) {
+                if ($order->items()->where('variant_id', $item['variant_id'])->first()) {
+                    continue;
+                }
+                $order->items()->create([
+                    'variant_id' => $item['variant_id'],
+                    'amount' => $item['amount'],
+                    'standard_price' => ProductVariant::find($item['variant_id'])->standard_price,
+                    'sale_price' => ProductVariant::find($item['variant_id'])->sale_price,
+                    'total' => ProductVariant::find($item['variant_id'])->sale_price * $item['amount'],
+                ]);
             }
-            $order->items()->create([
-                'variant_id' => $item['variant_id'],
-                'amount' => $item['amount'],
-                'standard_price' => ProductVariant::find($item['variant_id'])->standard_price,
-                'sale_price' => ProductVariant::find($item['variant_id'])->sale_price,
-                'total' => ProductVariant::find($item['variant_id'])->sale_price * $item['amount'],
-            ]);
+            $order->state = OrderState::CONFIRMED->value;
         }
+        $order->save();
         return response()->json([
             'code' => 200,
             'message' => __('messages.create.success', ['name' => 'order']),
@@ -143,10 +146,11 @@ class OrderController extends Controller
         ], 200);
     }
 
-    public function statistics(Request $request){
+    public function statistics(Request $request)
+    {
         $data = Order::selectRaw('count(orders.id) as total_order, sum(order_items.sale_price * order_items.amount) as total_sale, sum(order_items.standard_price * order_items.amount) as total_standard, sum(order_items.amount) as total_amount, orders.state as state');
         $data = $data->join('order_items', 'order_items.order_id', '=', 'orders.id');
-        if($request->start_date && $request->end_date){
+        if ($request->start_date && $request->end_date) {
             $data = $data->whereBetween('orders.created_at', [$request->start_date, $request->end_date]);
         }
         $data = $data->groupBy('state')->get();
