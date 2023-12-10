@@ -65,6 +65,7 @@ class OrderController extends Controller
             ], 400);
         }
         $order->fill($request->all());
+        $order->save();
         if ($request->has('items')) {
             foreach ($request->items as $item) {
                 if ($order->items()->where('variant_id', $item['variant_id'])->first()) {
@@ -80,7 +81,7 @@ class OrderController extends Controller
             }
             $order->state = OrderState::CONFIRMED->value;
         }
-        $order->save();
+
         return response()->json([
             'code' => 200,
             'message' => __('messages.create.success', ['name' => 'order']),
@@ -139,13 +140,13 @@ class OrderController extends Controller
             'data' => $order->load(
                 'customer:id,first_name,last_name',
                 'employee:id,first_name,last_name',
-                'items:id,variant_id,amount,sale_price,standard_price,order_id,rating,review',
-                'items.variant:id,product_id,sku',
+                'items:id,variant_id,amount,sale_price,standard_price,total,order_id,rating,review',
+                'items.variant:id,name,product_id,sku',
                 'items.variant.product:id,name',
+                'address:id,name,phone,address_line,province,district,ward'
             )
         ], 200);
     }
-
     public function statistics(Request $request)
     {
         $data = Order::selectRaw('count(orders.id) as total_order, sum(order_items.sale_price * order_items.amount) as total_sale, sum(order_items.standard_price * order_items.amount) as total_standard, sum(order_items.amount) as total_amount, orders.state as state');

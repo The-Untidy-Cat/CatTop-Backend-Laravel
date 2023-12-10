@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -7,18 +6,20 @@ use Illuminate\Support\Facades\DB;
 
 class DatabaseController extends Controller
 {
-    public static function query(Request $request, $table, array $column)
+    public static function query(Request $request, $table, array $columns)
     {
-        $data = DB::table($table)->select($column);
+        $data = DB::table($table)->select($columns);
         if ($request->has("search")) {
             $data = $data->where("name", "like", "%" . $request->search . "%");
         }
         if ($request->has("conditions")) {
             foreach ($request->conditions as $condition) {
-                if (gettype($condition[3]) == "array") {
-                    foreach ($condition[3] as $value) {
+                if (gettype($condition[2]) == "array") {
+                    foreach ($condition[2] as $value) {
                         $data = $data->where($condition[0], $condition[1], $value);
                     }
+                } else {
+                    $data = $data->where($condition[0], $condition[1], $condition[2]);
                 }
             }
         }
@@ -28,7 +29,6 @@ class DatabaseController extends Controller
         $data = $data->offset($offset)->limit($limit)->get();
         return ["limit" => $limit, "offset" => $offset, "length" => $length, "result" => $data];
     }
-
     public static function searchRead(string $model, array $conditions, array $attributes, array $with = [], array $joins = [], array $count_column = ['*'], int $offset = 0, int $limit = 0, string $order_by = null, string $order = null)
     {
         $model = app("App\\Models\\$model");
@@ -85,28 +85,27 @@ class DatabaseController extends Controller
                 }
             }
         }
-        if (isset($order_by)) {
-            $order = isset($order) ? $order : "asc";
-            $data = $data->orderBy($order_by, $order);
-        }
-        $data = $data->distinct();
+        $count = $data->count($count_column);
         $records = $data;
-        if (isset($offset) && $offset > 0 ){
-            $records = $records->offset($offset);
-        }
-        if (isset($limit) && $limit > 0 ){
+        if (isset($limit) && $limit > 0) {
             $records = $records->limit($limit);
+        }
+        if (isset($offset) && $offset > 0) {
+            $records = $records->offset($offset);
         }
         if (isset($with)) {
             $records = $records->with($with);
+        }
+        if (isset($order_by)) {
+            $order = isset($order) ? $order : "asc";
+            $records = $records->orderBy($order_by, $order);
         }
         $records = $records->get($attributes);
         return [
             "records" => $records,
             "limit" => $limit,
             "offset" => $offset,
-            "length" => $data->count($count_column)
+            "length" => $count
         ];
     }
-
 }
