@@ -90,11 +90,14 @@ class ProductVariantController extends Controller
         }
         $variant->fill($request->all());
         $variant->state = ProductVariantState::PUBLISHED;
+        $variant->sale_price = $variant->calculateSalePrice();
+        $variant->save();
+        $variant->sale_price = $variant->calculateSalePrice();
         $variant->save();
         return response()->json([
             'code' => 200,
             'message' => __('messages.create.success', ["name" => "Product Variant"]),
-            'data' => $variant->get([
+            'data' => $variant->only([
                 'id',
                 'sku',
                 'name',
@@ -168,6 +171,7 @@ class ProductVariantController extends Controller
             ], 400);
         }
         $variant->fill($request->all());
+        $variant->sale_price = $variant->calculateSalePrice();
         $variant->save();
         return response()->json([
             'code' => 200,

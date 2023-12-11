@@ -38,13 +38,13 @@ class OrderController extends Controller {
         }
         return response()->json([
             'code' => 200,
-            'data' => ['order' => $order->with([
+            'data' => ['order' => $order->load([
                 'address',
                 'histories:order_id,state,created_at',
                 'items:id,variant_id,amount,order_id,total,sale_price,standard_price,order_id,rating,review',
                 'items.variant:id,name,product_id',
                 'items.variant.product:id,name,slug,image,state',
-            ])->first()]
+            ])]
         ], 200);
     }
     public function create(Request $request) {
