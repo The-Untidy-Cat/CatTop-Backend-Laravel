@@ -71,7 +71,6 @@ class Product extends Model
         $rules = [
             "name" => "required|unique:products,name",
             "slug" => "required|unique:products,slug",
-            "description" => "required",
             "brand_id" => "required",
         ];
         return Validator::make($data, $rules);
