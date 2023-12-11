@@ -113,15 +113,16 @@ class OrderController extends Controller
         }
         if (
             $request->state == OrderState::DELIVERED->value &&
-            ($request->payment_state != PaymentState::PAID->value && $order->payment_state != PaymentState::PAID->value)
+            ($order->payment_state != PaymentState::PAID->value)
         ) {
-            return response()->json([
-                'code' => 400,
-                'message' => __('messages.validation.error'),
-                'errors' => [
-                    'payment_state' => [__('messages.order.payment_state.error')]
-                ]
-            ], 400);
+            if (isset($request->payment_state) && $request->payment_state != PaymentState::PAID->value)
+                return response()->json([
+                    'code' => 400,
+                    'message' => __('messages.validation.error'),
+                    'errors' => [
+                        'payment_state' => [__('messages.order.payment_state.error')]
+                    ]
+                ], 400);
         }
         $order->fill($request->all());
         $order->save();
