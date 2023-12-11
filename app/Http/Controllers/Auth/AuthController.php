@@ -190,6 +190,6 @@ class AuthController extends Controller
             'code' => 200,
             "message" => __('messages.logout.success')
         ], 200)
-            ->withCookie(cookie('auth_token', null, -1));
+            ->withCookie(cookie('auth_token', null, -1, "/", env('SESSION_DOMAIN', "localhost")));
     }
 }
