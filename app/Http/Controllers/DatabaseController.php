@@ -85,8 +85,8 @@ class DatabaseController extends Controller
                 }
             }
         }
-        $count = $data->count($count_column);
-        $records = $data;
+        $count = $data->distinct()->count($count_column);
+        $records = $data->distinct();
         if (isset($limit) && $limit > 0) {
             $records = $records->limit($limit);
         }
