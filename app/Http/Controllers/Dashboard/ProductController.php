@@ -54,7 +54,7 @@ class ProductController extends Controller
         return response()->json([
             'code' => 200,
             'message' => __('messages.create.success', ['name' => 'product']),
-            'data' => $product->get(['id', 'name', 'slug', 'description', 'image', 'state', 'brand_id'])
+            'data' => $product->only(['id', 'name', 'slug', 'description', 'image', 'state', 'brand_id'])
         ], 200);
     }
     public function update(Request $request, $product_id)

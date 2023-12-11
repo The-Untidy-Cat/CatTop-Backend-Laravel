@@ -124,7 +124,7 @@ class ProductVariantController extends Controller
             // "description" => "required_with:specifications",
             "standard_price" => "numeric",
             "tax_rate" => "min:0|max:1",
-            "discount" => "min:0|max:1",
+            "discount" => "numeric|min:0|max:1",
             "extra_fee" => "numeric",
             "cost_price" => "numeric",
             "specifications" => "array",
