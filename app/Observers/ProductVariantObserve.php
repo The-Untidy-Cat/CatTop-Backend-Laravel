@@ -6,11 +6,11 @@ use App\Models\ProductVariant;
 
 class ProductVariantObserve
 {
-    // public function created(ProductVariant $variant): void
-    // {
-    //     $variant->sale_price = $variant->calculateSalePrice();
-    //     $variant->save();
-    // }
+    public function created(ProductVariant $variant): void
+    {
+        $variant->sale_price = $variant->calculateSalePrice();
+        $variant->save();
+    }
 
     /**
      * Handle the ProductVariant "updated" event.

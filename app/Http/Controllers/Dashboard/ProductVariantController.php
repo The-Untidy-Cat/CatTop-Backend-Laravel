@@ -78,39 +78,44 @@ class ProductVariantController extends Controller
     }
     public function create(Request $request, $product_id)
     {
-        $variant = new ProductVariant();
-        $request->merge(['product_id' => $product_id]);
-        $validate = $variant->validate($request->all());
-        if ($validate->fails()) {
+        try {
+            $variant = new ProductVariant();
+            $request->merge(['product_id' => $product_id]);
+            $validate = $variant->validate($request->all());
+            if ($validate->fails()) {
+                return response()->json([
+                    'code' => 400,
+                    'message' => __('messages.validation.error'),
+                    'errors' => $validate->errors()
+                ], 400);
+            }
+            $variant->fill($request->all());
+            $variant->state = ProductVariantState::PUBLISHED;
+            $variant->save();
             return response()->json([
-                'code' => 400,
-                'message' => __('messages.validation.error'),
-                'errors' => $validate->errors()
-            ], 400);
+                'code' => 200,
+                'message' => __('messages.create.success', ["name" => "Product Variant"]),
+                'data' => $variant->only([
+                    'id',
+                    'sku',
+                    'name',
+                    'standard_price',
+                    'tax_rate',
+                    'discount',
+                    'extra_fee',
+                    'cost_price',
+                    'specifications',
+                    'state',
+                    'sale_price'
+                ])
+            ], 200);
+        } catch (\Exception $th) {
+            return response()->json([
+                'code' => 500,
+                'message' => __('messages.create.error', ["name" => "Product Variant"]),
+                'errors' => $th->getMessage()
+            ], 500);
         }
-        $variant->fill($request->all());
-        $variant->state = ProductVariantState::PUBLISHED;
-        $variant->sale_price = $variant->calculateSalePrice();
-        $variant->save();
-        $variant->sale_price = $variant->calculateSalePrice();
-        $variant->save();
-        return response()->json([
-            'code' => 200,
-            'message' => __('messages.create.success', ["name" => "Product Variant"]),
-            'data' => $variant->only([
-                'id',
-                'sku',
-                'name',
-                'standard_price',
-                'tax_rate',
-                'discount',
-                'extra_fee',
-                'cost_price',
-                'specifications',
-                'state',
-                'sale_price'
-            ])
-        ], 200);
     }
     public function update(Request $request, $product_id, $variant_id)
     {
