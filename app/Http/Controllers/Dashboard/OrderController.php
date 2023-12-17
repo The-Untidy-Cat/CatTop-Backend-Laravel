@@ -90,7 +90,8 @@ class OrderController extends Controller
     }
     public function update(Request $request, $order_id)
     {
-        $order = Order::find($order_id);
+        try {
+            $order = Order::find($order_id);
         $validate = Validator::make($request->all(), [
             'address_id' => ['exists:address_books,id'],
             'customer_id' => ['exists:customers,id'],
@@ -110,6 +111,35 @@ class OrderController extends Controller
                 'message' => __('messages.validation.error'),
                 'errors' => $validate->errors()
             ], 400);
+        }
+        if ($request->state == OrderState::FAILED->value) {
+            $newOrder = new Order();
+            $newOrder->fill($order->toArray());
+            $newOrder->customer_id = $order->customer_id;
+            $newOrder->state = OrderState::PENDING->value;
+            $newOrder->payment_state = PaymentState::UNPAID->value;
+            $newOrder->note = "Đổi trả đơn hàng #$order->id";
+            $newOrder->save();
+            $order->state = OrderState::FAILED->value;
+            $order->note = "Đã đổi trả đơn hàng #$newOrder->id";
+            $order->items()->get()->each(function ($item) use ($newOrder) {
+                $newOrder->items()->create([
+                    'variant_id' => $item->variant_id,
+                    'amount' => $item->amount,
+                    'standard_price' => $item->standard_price,
+                    'sale_price' => $item->sale_price,
+                    'total' => $item->total,
+                ]);
+            });
+            $order->save();
+            return response()->json([
+                'code' => 200,
+                'message' => __('messages.update.success', ['name' => 'order']),
+                'data' => [
+                    'old' => $order,
+                    'new' => $newOrder
+                ]
+            ], 200);
         }
         if (
             $request->state == OrderState::DELIVERED->value &&
@@ -131,6 +161,14 @@ class OrderController extends Controller
             'message' => __('messages.update.success', ['name' => 'order']),
             'data' => $order
         ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'code' => 400,
+                'message' => __('messages.update.error', ['name' => 'order']),
+                'errors' => $e->getMessage()
+            ], 400);
+        }
+
     }
     public function show(Request $request, $order_id)
     {

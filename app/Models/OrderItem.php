@@ -16,6 +16,7 @@ class OrderItem extends Model
         'sale_price',
         'total',
         'is_refund',
+        'serial_number'
     ];
 
     protected $attributes = [

@@ -66,6 +66,7 @@ Route::middleware(['auth:sanctum', 'auth.dash'])->group(
         });
         Route::prefix('statistics')->group(function () {
             Route::get('/orders', [OrderController::class, 'statistics']);
+            Route::get('/products', [ProductController::class, 'statistics']);
         });
     }
 );

@@ -143,6 +143,9 @@ class OrderItemController extends Controller
         if ($request->amount) {
             $orderItem->amount = $request->amount;
         }
+        if ($request->serial_number) {
+            $orderItem->serial_number = $request->serial_number;
+        }
         $orderItem->total = $orderItem->sale_price * $orderItem->amount;
         $orderItem->save();
         return response()->json([

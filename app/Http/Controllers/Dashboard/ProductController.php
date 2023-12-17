@@ -23,20 +23,30 @@ class ProductController extends Controller
     }
     public function show($product_id)
     {
-        $product = Product::find($product_id);
-        if (!$product) {
+        try {
+            $product = Product::find($product_id);
+            if (!$product) {
+                return response()->json([
+                    'code' => 404,
+                    'message' => __('messages.not_found'),
+                ], 404);
+            }
             return response()->json([
-                'code' => 404,
-                'message' => __('messages.not_found'),
-            ], 404);
+                'code' => 200,
+                'message' => __('messages.list.success', ['name' => 'product']),
+                'data' => $product->load(
+                    'variants:id,name,sku,product_id,standard_price,sale_price,discount,state', 'brand:id,name,image',
+                    // 'orders:orders.id,orders.created_at',
+                )->only(['id', 'name', 'slug', 'description', 'image', 'state', 'variants', 'brand'])
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'code' => 500,
+                'message' => __('messages.server_error'),
+                'errors' => $e->getMessage()
+            ], 500);
         }
-        return response()->json([
-            'code' => 200,
-            'message' => __('messages.list.success', ['name' => 'product']),
-            'data' => $product->load(
-                'variants:id,name,sku,product_id,standard_price,sale_price,discount,state', 'brand:id,name,image'
-            )->only(['id', 'name', 'slug', 'description', 'image', 'state', 'variants', 'brand'])
-        ], 200);
+
     }
     public function create(Request $request)
     {
@@ -85,5 +95,31 @@ class ProductController extends Controller
             'message' => __('messages.update.success', ['name' => 'product']),
             'data' => $product->get(['id', 'name', 'slug', 'description', 'image', 'state', 'brand_id'])
         ], 200);
+    }
+    public function statistics(Request $request)
+    {
+        try {
+            $products = Product::join('product_variants', 'product_variants.product_id', '=', 'products.id')
+                ->join('order_items', 'order_items.variant_id', '=', 'product_variants.id')
+                ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->selectRaw('products.id, products.name as product_name, product_variants.name as variant_name, count(order_items.id) as total_order, sum(order_items.amount) as total_amount, sum(order_items.amount * order_items.sale_price) as total_sale')
+                ->groupBy('products.id', 'products.name', 'product_variants.name', 'products.state')
+                ->orderBy('total_order', 'desc');
+            if ($request->has('start_date') && $request->has('end_date')) {
+                $products->whereBetween('orders.created_at', [$request->start_date, $request->end_date]);
+            }
+            return response()->json([
+                'code' => 200,
+                'message' => __('messages.list.success', ['name' => 'products']),
+                'data' => $products->distinct()->limit(10)->get()
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'code' => 500,
+                'message' => __('messages.server_error'),
+                'errors' => $e->getMessage()
+            ], 500);
+        }
+
     }
 }
