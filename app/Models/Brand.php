@@ -34,7 +34,7 @@ class Brand extends Model
 
     public function getProductCountAttribute()
     {
-        return $this->products()->where(["products.state", "=", ProductState::PUBLISHED])->count(["products.id"]);
+        return $this->products()->where([["products.state", "=", ProductState::PUBLISHED]])->count(["products.id"]);
     }
 
     // public function getStateAttribute()
