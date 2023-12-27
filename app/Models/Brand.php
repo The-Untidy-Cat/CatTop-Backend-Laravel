@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\BrandState;
+use App\Enums\ProductState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -33,7 +34,7 @@ class Brand extends Model
 
     public function getProductCountAttribute()
     {
-        return $this->products()->count();
+        return $this->products()->where(["products.state", "=", ProductState::PUBLISHED])->count(["products.id"]);
     }
 
     // public function getStateAttribute()

@@ -180,7 +180,7 @@ class OrderController extends Controller {
         }
         $validate = Validator::make($request->all(), [
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
-            'review' => ['string']
+            'review' => ['nullable','string']
         ]);
         if($validate->fails()) {
             return response()->json([
