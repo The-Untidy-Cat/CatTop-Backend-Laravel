@@ -1,0 +1,34 @@
+version: "3"
+name: "cattop-backend-laravel"
+services:
+  main:
+    ports:
+      - "8001:80"
+    volumes:
+      - ./000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./.env.docker:/var/www/html/.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+  db:
+    image: mariadb:10.4.28
+    container_name: mariadb-container
+    ports:
+      - "3307:3306"
+    volumes:
+    - ./db:/var/lib/mysql
+    environment:
+        MARIADB_ROOT_PASSWORD: root
+        MARIADB_DATABASE: theuntidycat
+        MARIADB_USER: root
+        MARIADB_PASSWORD:
+  phpmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin
+    restart: always
+    ports:
+      - "8090:80"
+    environment:
+      PMA_HOST:
+      MYSQL_ROOT_PASSWORD: root
